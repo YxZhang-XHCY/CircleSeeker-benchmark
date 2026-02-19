@@ -9,9 +9,9 @@ This repository contains the benchmark framework used to evaluate four eccDNA de
 | Tool | Version | Input Data | Read Type |
 |------|---------|-----------|-----------|
 | [CircleSeeker](https://github.com/YaoXinZH/CircleSeeker) | v1.0 | HiFi long reads | PacBio HiFi |
-| [CircleMap Enhanced](https://github.com/iprada/Circle-Map) | v1.1.4 | NGS paired-end reads | Illumina |
-| [CReSIL](https://github.com/visanuwan/cresil) | v1.1 | ONT long reads | Oxford Nanopore |
-| [eccDNA_RCA_nanopore](https://github.com/yourrepo/eccDNA_RCA_nanopore) | latest | ONT long reads | Oxford Nanopore |
+| [Circle-Map](https://github.com/iprada/Circle-Map) + [Circle-Map-cpp](https://github.com/BGI-Qingdao/Circle-Map-cpp) | v1.1.4 + v1.0.0 | NGS paired-end reads | Illumina |
+| [CReSIL](https://github.com/visanuwan/cresil) | v1.1.0 | ONT long reads | Oxford Nanopore |
+| [eccDNA_RCA_nanopore](https://github.com/icebert/eccDNA_RCA_nanopore) | commit [3f4b1dd](https://github.com/icebert/eccDNA_RCA_nanopore/commit/3f4b1dd) | ONT long reads | Oxford Nanopore |
 
 ## Simulated Datasets
 
