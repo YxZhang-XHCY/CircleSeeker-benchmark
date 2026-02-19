@@ -27,7 +27,7 @@ from typing import List, Dict, Tuple, Set
 GENOMES = ["ColCEN_5200", "human_10000_simple", "human_23000"]
 REPS = ["rep1", "rep2", "rep3"]
 DEPTHS = ["sequencing_10X", "sequencing_30X", "sequencing_50X"]
-TOOLS = ["CircleMap", "CircleSeeker", "CReSIL", "eccDNA_RCA"]
+TOOLS = ["CircleMap", "CircleSeeker", "CReSIL", "CReSIL_HiFi", "eccDNA_RCA"]
 OVERLAP_THRESHOLD = 0.9
 
 
@@ -516,6 +516,8 @@ def main():
                         os.path.join(d, 'CircleSeeker_summary.csv')),
                     'CReSIL': parse_cresil(
                         os.path.join(d, 'CReSIL_eccDNA_final.txt')),
+                    'CReSIL_HiFi': parse_cresil(
+                        os.path.join(d, 'CReSIL_HiFi_eccDNA_final.txt')),
                 }
 
                 rca_regions, rca_stats = parse_eccdna_rca(

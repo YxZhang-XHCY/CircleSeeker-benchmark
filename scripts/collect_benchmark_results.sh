@@ -91,7 +91,20 @@ for genome in "${GENOMES[@]}"; do
             fi
 
             # ============================================================
-            # 5. eccDNA_RCA_nanopore (ONT 长读长工具)
+            # 5. CReSIL-HiFi (HiFi 长读长工具)
+            #    主结果: eccDNA_final.txt (与 CReSIL ONT 格式相同)
+            # ============================================================
+            cr_hifi_file="${src}/cresil_hifi_output/eccDNA_final.txt"
+            if [ -f "${cr_hifi_file}" ]; then
+                cp -n "${cr_hifi_file}" "${dst}/CReSIL_HiFi_eccDNA_final.txt"
+                total=$((total + 1))
+            else
+                echo "  [MISS] ${cr_hifi_file}"
+                skipped=$((skipped + 1))
+            fi
+
+            # ============================================================
+            # 6. eccDNA_RCA_nanopore (ONT 长读长工具)
             #    主结果: *_info.tsv (检测信息)
             #    辅助:   *_eccDNA.fa (eccDNA 序列)
             # ============================================================
@@ -133,6 +146,7 @@ echo "    CircleMap_filtered.bed  <- CircleMap Enhanced 结果"
 echo "    CircleMap_raw.bed       <- CircleMap Enhanced 原始结果"
 echo "    CircleSeeker_summary.csv <- CircleSeeker 汇总结果"
 echo "    CircleSeeker_regions.csv <- CircleSeeker 区域结果"
-echo "    CReSIL_eccDNA_final.txt <- CReSIL 结果"
+echo "    CReSIL_eccDNA_final.txt <- CReSIL (ONT) 结果"
+echo "    CReSIL_HiFi_eccDNA_final.txt <- CReSIL-HiFi 结果"
 echo "    eccDNA_RCA_info.tsv     <- eccDNA_RCA_nanopore 结果"
 echo "    eccDNA_RCA_eccDNA.fa    <- eccDNA_RCA_nanopore 序列"
