@@ -92,89 +92,136 @@ eccDNA_RCA_nanopore outputs read-level results with substantial redundancy. Befo
 | Depth | Tool | Precision | Recall | F1 |
 |-------|------|-----------|--------|------|
 | 10X | CircleSeeker | **99.7%** | **93.5%** | **96.5%** |
-| 10X | CircleMap | 99.7% | 25.3% | 36.6% |
+| 10X | CReSIL-HiFi | 98.4% | 66.1% | 79.1% |
 | 10X | CReSIL | 94.3% | 51.9% | 66.9% |
 | 10X | eccDNA_RCA | 87.4% | 73.1% | 79.6% |
+| 10X | CircleMap | 99.7% | 25.3% | 36.6% |
+| 10X | ecc_finder | 95.7% | 13.9% | 23.3% |
 | 30X | CircleSeeker | **99.6%** | **98.6%** | **99.1%** |
-| 30X | CircleMap | 98.5% | 78.7% | 87.5% |
+| 30X | CReSIL-HiFi | 99.7% | 89.5% | 94.3% |
 | 30X | CReSIL | 98.7% | 80.5% | 88.7% |
 | 30X | eccDNA_RCA | 72.9% | 85.4% | 78.7% |
+| 30X | CircleMap | 98.5% | 78.7% | 87.5% |
+| 30X | ecc_finder | 94.0% | 35.6% | 51.7% |
 | 50X | CircleSeeker | **99.4%** | **99.1%** | **99.2%** |
-| 50X | CircleMap | 97.4% | 84.4% | 90.5% |
+| 50X | CReSIL-HiFi | 99.8% | 91.8% | 95.6% |
 | 50X | CReSIL | 99.0% | 85.8% | 91.9% |
 | 50X | eccDNA_RCA | 63.7% | 88.4% | 74.0% |
+| 50X | CircleMap | 97.4% | 84.4% | 90.5% |
+| 50X | ecc_finder | 94.5% | 42.2% | 58.3% |
 
 #### human_23000 (20,000 Uecc + 2,000 Mecc + 1,000 Cecc)
 
 | Depth | Tool | Precision | Recall | F1 |
 |-------|------|-----------|--------|------|
 | 10X | CircleSeeker | **98.2%** | **91.0%** | **94.4%** |
-| 10X | CircleMap | 94.4% | 46.1% | 62.0% |
+| 10X | CReSIL-HiFi | 94.0% | 55.2% | 69.5% |
 | 10X | CReSIL | 89.8% | 43.2% | 58.4% |
 | 10X | eccDNA_RCA | 80.9% | 63.3% | 71.1% |
+| 10X | CircleMap | 94.4% | 46.1% | 62.0% |
+| 10X | ecc_finder | 71.8% | 8.1% | 14.6% |
 | 30X | CircleSeeker | **98.1%** | **96.4%** | **97.2%** |
-| 30X | CircleMap | 93.6% | 68.5% | 79.1% |
-| 30X | CReSIL | 95.3% | 67.6% | 79.0% |
+| 30X | CReSIL-HiFi | 95.6% | 74.7% | 83.9% |
+| 30X | CReSIL | 95.3% | 67.6% | 79.1% |
 | 30X | eccDNA_RCA | 65.2% | 74.2% | 69.4% |
+| 30X | CircleMap | 93.6% | 68.5% | 79.1% |
+| 30X | ecc_finder | 68.6% | 10.0% | 17.4% |
 | 50X | CircleSeeker | **97.9%** | **97.1%** | **97.5%** |
-| 50X | CircleMap | 92.8% | 74.0% | 82.3% |
+| 50X | CReSIL-HiFi | 95.7% | 76.9% | 85.3% |
 | 50X | CReSIL | 96.4% | 72.4% | 82.7% |
-| 50X | eccDNA_RCA | 56.5% | 76.5% | 65.0% |
+| 50X | eccDNA_RCA | 56.5% | 76.6% | 65.0% |
+| 50X | CircleMap | 92.8% | 74.0% | 82.3% |
+| 50X | ecc_finder | 67.3% | 9.8% | 17.2% |
 
 #### ColCEN_5200 (4,000 Uecc + 1,000 Mecc + 200 Cecc)
 
 | Depth | Tool | Precision | Recall | F1 |
 |-------|------|-----------|--------|------|
 | 10X | CircleSeeker | **98.9%** | **90.8%** | **94.7%** |
-| 10X | CircleMap | 88.2% | 19.5% | 29.6% |
+| 10X | CReSIL-HiFi | 95.0% | 35.6% | 51.8% |
 | 10X | CReSIL | 91.6% | 29.1% | 44.2% |
 | 10X | eccDNA_RCA | 82.7% | 57.3% | 67.7% |
+| 10X | CircleMap | 88.2% | 19.5% | 29.6% |
+| 10X | ecc_finder | 18.9% | 0.6% | 1.1% |
 | 30X | CircleSeeker | **98.9%** | **96.1%** | **97.5%** |
-| 30X | CircleMap | 94.8% | 60.4% | 73.8% |
+| 30X | CReSIL-HiFi | 96.3% | 46.8% | 63.0% |
 | 30X | CReSIL | 96.1% | 43.5% | 59.8% |
 | 30X | eccDNA_RCA | 66.6% | 66.9% | 66.7% |
+| 30X | CircleMap | 94.8% | 60.4% | 73.8% |
+| 30X | ecc_finder | 17.0% | 1.5% | 2.7% |
 | 50X | CircleSeeker | **98.8%** | **97.0%** | **97.9%** |
-| 50X | CircleMap | 94.2% | 64.5% | 76.5% |
+| 50X | CReSIL-HiFi | 96.1% | 48.7% | 64.6% |
 | 50X | CReSIL | 96.8% | 46.9% | 63.2% |
 | 50X | eccDNA_RCA | 57.4% | 69.3% | 62.8% |
+| 50X | CircleMap | 94.2% | 64.5% | 76.5% |
+| 50X | ecc_finder | 19.6% | 2.0% | 3.7% |
 
 ### Per-type Recall (3-replicate average)
 
 #### Uecc Recall
 
-| Dataset | Depth | CircleSeeker | CircleMap | CReSIL | eccDNA_RCA |
-|---------|-------|-------------|-----------|--------|------------|
-| human_10000_simple | 10X | **93.5%** | 25.3% | 51.9% | 73.1% |
-| human_10000_simple | 30X | **98.6%** | 78.7% | 80.5% | 85.4% |
-| human_10000_simple | 50X | **99.1%** | 84.4% | 85.8% | 88.4% |
-| human_23000 | 10X | **93.1%** | 53.0% | 49.0% | 72.8% |
-| human_23000 | 30X | **98.3%** | 78.5% | 76.1% | 85.3% |
-| human_23000 | 50X | **98.8%** | 84.2% | 81.0% | 88.0% |
-| ColCEN_5200 | 10X | **91.9%** | 25.3% | 37.2% | 74.5% |
-| ColCEN_5200 | 30X | **96.9%** | 77.4% | 55.1% | 86.9% |
-| ColCEN_5200 | 50X | **97.5%** | 82.0% | 59.0% | 90.1% |
+| Dataset | Depth | CircleSeeker | CReSIL-HiFi | CReSIL | eccDNA_RCA | CircleMap | ecc_finder |
+|---------|-------|:-----------:|:-----------:|:------:|:----------:|:---------:|:----------:|
+| human_10000_simple | 10X | **93.5%** | 66.1% | 51.9% | 73.1% | 25.3% | 13.9% |
+| human_10000_simple | 30X | **98.6%** | 89.5% | 80.5% | 85.4% | 78.7% | 35.6% |
+| human_10000_simple | 50X | **99.1%** | 91.8% | 85.8% | 88.4% | 84.4% | 42.2% |
+| human_23000 | 10X | **93.1%** | 62.6% | 49.0% | 72.8% | 53.0% | 9.3% |
+| human_23000 | 30X | **98.3%** | 84.5% | 76.1% | 85.3% | 78.5% | 11.4% |
+| human_23000 | 50X | **98.8%** | 86.9% | 81.0% | 88.0% | 84.2% | 11.3% |
+| ColCEN_5200 | 10X | **91.9%** | 44.7% | 37.2% | 74.5% | 25.3% | 0.7% |
+| ColCEN_5200 | 30X | **96.9%** | 58.9% | 55.1% | 86.9% | 77.4% | 1.9% |
+| ColCEN_5200 | 50X | **97.5%** | 60.8% | 59.0% | 90.1% | 82.0% | 2.6% |
 
 #### Mecc Recall
 
-| Dataset | Depth | CircleSeeker | CircleMap | CReSIL | eccDNA_RCA |
-|---------|-------|-------------|-----------|--------|------------|
-| human_23000 | 10X | **77.2%** | 0.4% | 1.6% | 0.0% |
-| human_23000 | 30X | **82.2%** | 3.0% | 4.5% | 0.0% |
-| human_23000 | 50X | **83.7%** | 9.2% | 6.4% | 0.0% |
-| ColCEN_5200 | 10X | **90.1%** | 0.2% | 1.8% | 0.0% |
-| ColCEN_5200 | 30X | **95.2%** | 4.5% | 4.5% | 0.0% |
-| ColCEN_5200 | 50X | **96.5%** | 7.2% | 6.0% | 0.0% |
+| Dataset | Depth | CircleSeeker | CReSIL-HiFi | CReSIL | eccDNA_RCA | CircleMap | ecc_finder |
+|---------|-------|:-----------:|:-----------:|:------:|:----------:|:---------:|:----------:|
+| human_23000 | 10X | **77.2%** | 5.8% | 1.6% | 0.0% | 0.4% | 0.3% |
+| human_23000 | 30X | **82.2%** | 9.0% | 4.5% | 0.0% | 3.0% | 0.4% |
+| human_23000 | 50X | **83.7%** | 10.3% | 6.4% | 0.0% | 9.2% | 0.4% |
+| ColCEN_5200 | 10X | **90.1%** | 5.6% | 1.8% | 0.0% | 0.2% | 0.0% |
+| ColCEN_5200 | 30X | **95.2%** | 7.4% | 4.5% | 0.0% | 4.5% | 0.3% |
+| ColCEN_5200 | 50X | **96.5%** | 9.7% | 6.0% | 0.0% | 7.2% | 0.3% |
 
 #### Cecc Recall
 
-| Dataset | Depth | CircleSeeker | CircleMap | CReSIL | eccDNA_RCA |
-|---------|-------|-------------|-----------|--------|------------|
-| human_23000 | 10X | **76.9%** | 0.0% | 10.8% | 0.0% |
-| human_23000 | 30X | **87.7%** | 0.0% | 22.6% | 0.0% |
-| human_23000 | 50X | **90.8%** | 0.0% | 33.2% | 0.0% |
-| ColCEN_5200 | 10X | **72.7%** | 0.0% | 4.0% | 0.0% |
-| ColCEN_5200 | 30X | **85.0%** | 0.0% | 6.8% | 0.0% |
-| ColCEN_5200 | 50X | **89.7%** | 0.0% | 9.5% | 0.0% |
+| Dataset | Depth | CircleSeeker | CReSIL-HiFi | CReSIL | eccDNA_RCA | CircleMap | ecc_finder |
+|---------|-------|:-----------:|:-----------:|:------:|:----------:|:---------:|:----------:|
+| human_23000 | 10X | **76.9%** | 5.4% | 10.8% | 0.0% | 0.0% | 0.0% |
+| human_23000 | 30X | **87.7%** | 9.4% | 22.6% | 0.0% | 0.0% | 0.0% |
+| human_23000 | 50X | **90.8%** | 10.9% | 33.2% | 0.0% | 0.0% | 0.0% |
+| ColCEN_5200 | 10X | **72.7%** | 1.8% | 4.0% | 0.0% | 0.0% | 0.0% |
+| ColCEN_5200 | 30X | **85.0%** | 2.2% | 6.8% | 0.0% | 0.0% | 0.0% |
+| ColCEN_5200 | 50X | **89.7%** | 1.8% | 9.5% | 0.0% | 0.0% | 0.0% |
+
+### CircleSeeker Per-type Precision (3-replicate average)
+
+CircleSeeker is the only tool that classifies each detection by eccDNA type, enabling full per-type Precision evaluation.
+
+| Dataset | Depth | Uecc Precision | Mecc Precision | Cecc Precision |
+|---------|-------|:--------------:|:--------------:|:--------------:|
+| human_10000_simple | 10X | **99.8%** | - | - |
+| human_10000_simple | 30X | **99.8%** | - | - |
+| human_10000_simple | 50X | **99.6%** | - | - |
+| human_23000 | 10X | **99.2%** | **86.0%** | **95.4%** |
+| human_23000 | 30X | **99.2%** | **85.0%** | **93.8%** |
+| human_23000 | 50X | **99.2%** | **84.5%** | **92.8%** |
+| ColCEN_5200 | 10X | **99.2%** | **96.8%** | **98.2%** |
+| ColCEN_5200 | 30X | **99.3%** | **96.7%** | **96.8%** |
+| ColCEN_5200 | 50X | **99.3%** | **96.5%** | **96.0%** |
+
+### Cecc Precision Comparison (3-replicate average)
+
+Tools that produce multi-fragment detection groups can be evaluated for Cecc Precision. CircleSeeker explicitly classifies detections; CReSIL/CReSIL-HiFi use structural inference (multi-region groups = Cecc candidates).
+
+| Dataset | Depth | CircleSeeker | CReSIL | CReSIL-HiFi |
+|---------|-------|:-----------:|:------:|:-----------:|
+| human_23000 | 10X | **95.4%** | 42.7% | 28.5% |
+| human_23000 | 30X | **93.8%** | 67.8% | 40.5% |
+| human_23000 | 50X | **92.8%** | 79.9% | 44.0% |
+| ColCEN_5200 | 10X | **98.2%** | 33.8% | 21.6% |
+| ColCEN_5200 | 30X | **96.8%** | 52.4% | 31.1% |
+| ColCEN_5200 | 50X | **96.0%** | 59.6% | 26.8% |
 
 ### eccDNA_RCA Redundancy (after 99% deduplication)
 
