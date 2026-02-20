@@ -4,14 +4,20 @@ Comprehensive benchmarking of eccDNA detection tools on simulated long-read and 
 
 ## Overview
 
-This repository contains the benchmark framework used to evaluate four eccDNA detection tools:
+This repository contains the benchmark framework used to evaluate six eccDNA detection tools across three sequencing platforms:
 
 | Tool | Version | Input Data | Read Type |
 |------|---------|-----------|-----------|
 | [CircleSeeker](https://github.com/YaoXinZH/CircleSeeker) | v1.0 | HiFi long reads | PacBio HiFi |
-| [Circle-Map](https://github.com/iprada/Circle-Map) + [Circle-Map-cpp](https://github.com/BGI-Qingdao/Circle-Map-cpp) | v1.1.4 + v1.0.0 | NGS paired-end reads | Illumina |
+| [CReSIL-HiFi](https://github.com/YxZhang-XHCY/cresil-hifi) | v1.2.0+hifi | HiFi long reads | PacBio HiFi |
 | [CReSIL](https://github.com/visanuwan/cresil) | v1.1.0 | ONT long reads | Oxford Nanopore |
 | [eccDNA_RCA_nanopore](https://github.com/icebert/eccDNA_RCA_nanopore) | commit [3f4b1dd](https://github.com/icebert/eccDNA_RCA_nanopore/commit/3f4b1dd) | ONT long reads | Oxford Nanopore |
+| [Circle-Map](https://github.com/iprada/Circle-Map) + [Circle-Map-cpp](https://github.com/BGI-Qingdao/Circle-Map-cpp) | v1.1.4 + v1.0.0 | NGS paired-end reads | Illumina |
+| [ecc_finder](https://github.com/njaupan/ecc_finder) | v1.1.0 | NGS paired-end reads | Illumina |
+
+### Excluded Tool
+
+[CIDER-Seq2](https://github.com/devang-mehta/ciderseq2) (v2.0) was initially considered but excluded from the benchmark. Its MUSCLE-based de-concatenation (O(n·L²) per read for read length L) and exhaustive BLAST with O(n²) hit reordering are intractable for large eukaryotic genomes. Even after replacing the DeConcat step with TideHunter, the downstream BLAST-based eccDNA detection remained infeasible for human genome-scale data (>300K reads, 3.1 Gb reference).
 
 ## Simulated Datasets
 
@@ -52,7 +58,7 @@ Each sample includes matched simulated reads for all applicable sequencing platf
 
 ### Unified Matching Strategy
 
-All tools are evaluated using a single unified matching pass to avoid double-counting or misattribution of detections:
+Since existing eccDNA detection tools output only genomic coordinate intervals without eccDNA type classification (unique / multi-mapping / chimeric), we designed a unified two-phase evaluation framework for fair cross-tool comparison:
 
 1. **Phase 1 — Cecc (strict matching)**: Each detected eccDNA group is first tested against chimeric truth entries. A Cecc truth is matched only if **ALL** of its fragments are found in the detected group (similarity >= 90%, defined as overlap / min(length1, length2)).
 
@@ -60,8 +66,12 @@ All tools are evaluated using a single unified matching pass to avoid double-cou
 
 ### Metrics
 
-- **Overall**: Precision, Recall, and F1 are computed across all eccDNA types combined. This is the primary evaluation metric.
-- **Per-type (Uecc/Mecc/Cecc)**: Only **Recall** is reported, as Precision cannot be meaningfully attributed to individual types when tools do not classify their detections by type (unmatched detections cannot be assigned to a specific type).
+- **Overall**: Precision, Recall, and F1 are computed across all eccDNA types combined. This is the primary cross-tool comparison metric.
+- **Per-type Recall (Uecc/Mecc/Cecc)**: Leveraging the type labels in simulated ground truth, per-type Recall reveals how well each tool detects eccDNA of different structural complexities. Per-type Precision is **not** reported for most tools, because their outputs do not carry type labels — false positive detections cannot be attributed to a specific eccDNA type.
+- **Per-type Precision (selected tools)**: Per-type Precision is reported for tools whose outputs carry structural or explicit type information:
+  - **CircleSeeker**: Full per-type Precision for Uecc, Mecc, and Cecc — the only tool that explicitly classifies each detection by eccDNA type.
+  - **CReSIL / CReSIL-HiFi**: Cecc Precision only — multi-fragment detection groups (multiple regions under one eccDNA ID) are structurally identifiable as chimeric eccDNA candidates.
+  - **Other tools**: No per-type Precision (outputs are untyped single-region detections).
 
 ### Detection Grouping
 

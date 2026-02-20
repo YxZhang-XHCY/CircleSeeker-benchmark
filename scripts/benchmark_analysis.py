@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
 eccDNA Benchmark Analysis
-比较 CircleMap Enhanced, CircleSeeker, CReSIL, eccDNA_RCA_nanopore 四个工具
-与模拟 truth BED 的检测性能
+比较 CircleMap, CircleSeeker, CReSIL, CReSIL-HiFi, eccDNA_RCA_nanopore, ecc_finder
+六个工具与模拟 truth BED 的检测性能
 
 匹配规则: reciprocal overlap >= 90% (Uecc/Mecc), similarity >= 90% (Cecc ALL fragments)
 评估维度: Overall + 按类型 (Uecc/Mecc/Cecc)
@@ -14,10 +14,11 @@ import os
 import re
 import csv
 import sys
+import bisect
 import statistics
 from collections import defaultdict
 from dataclasses import dataclass
-from typing import List, Dict, Tuple, Set
+from typing import List, Dict, Tuple, Set, Optional
 
 
 # ============================================================
@@ -27,7 +28,7 @@ from typing import List, Dict, Tuple, Set
 GENOMES = ["ColCEN_5200", "human_10000_simple", "human_23000"]
 REPS = ["rep1", "rep2", "rep3"]
 DEPTHS = ["sequencing_10X", "sequencing_30X", "sequencing_50X"]
-TOOLS = ["CircleMap", "CircleSeeker", "CReSIL", "CReSIL_HiFi", "eccDNA_RCA"]
+TOOLS = ["CircleMap", "CircleSeeker", "CReSIL", "CReSIL_HiFi", "eccDNA_RCA", "ecc_finder"]
 OVERLAP_THRESHOLD = 0.9
 
 
@@ -130,10 +131,14 @@ def parse_circleseeker(filepath):
     - Uecc: 直接取 chr, start, end
     - Mecc: 从 location 解析所有 mapping 位点 (用 | 分隔)
     - Cecc: 从 location 解析所有片段 (用 ; 分隔)
+
+    返回: (regions, type_dict)
+        type_dict: {eccDNA_id -> 'U'/'M'/'C'}
     """
     if not os.path.exists(filepath):
-        return []
+        return [], {}
     regions = []
+    type_dict = {}
     with open(filepath) as f:
         reader = csv.DictReader(f)
         for row in reader:
@@ -141,6 +146,7 @@ def parse_circleseeker(filepath):
             ecc_type = row['type']
 
             if ecc_type == 'Cecc':
+                type_dict[ecc_id] = 'C'
                 loc = row.get('location', '')
                 for frag in loc.split(';'):
                     m = re.match(r'([^:]+):(\d+)-(\d+)', frag)
@@ -149,6 +155,7 @@ def parse_circleseeker(filepath):
                             m.group(1), int(m.group(2)), int(m.group(3)), ecc_id
                         ))
             elif ecc_type == 'Mecc':
+                type_dict[ecc_id] = 'M'
                 loc = row.get('location', '')
                 for site in loc.split('|'):
                     m = re.match(r'([^:]+):(\d+)-(\d+)', site)
@@ -157,10 +164,11 @@ def parse_circleseeker(filepath):
                             m.group(1), int(m.group(2)), int(m.group(3)), ecc_id
                         ))
             else:  # Uecc
+                type_dict[ecc_id] = 'U'
                 regions.append(Region(
                     row['chr'], int(row['start']), int(row['end']), ecc_id
                 ))
-    return regions
+    return regions, type_dict
 
 
 def parse_cresil(filepath):
@@ -187,6 +195,40 @@ def parse_cresil(filepath):
                         m.group(1), int(m.group(2)), int(m.group(3)), ecc_id
                     ))
     return regions
+
+
+def parse_ecc_finder(filepath):
+    """
+    解析 ecc_finder 输出 CSV (TSV, 无 header)
+    列: chr, start, end, circular_read_count, repeat_units, length
+    每行一个独立检测, 用行号作为 eccDNA ID
+    """
+    if not os.path.exists(filepath):
+        return []
+    regions = []
+    with open(filepath) as f:
+        for i, line in enumerate(f):
+            if not line.strip():
+                continue
+            p = line.strip().split('\t')
+            if len(p) >= 3:
+                regions.append(Region(
+                    p[0], int(p[1]), int(p[2]), f"ecc_finder_{i}"
+                ))
+    return regions
+
+
+def infer_cecc_types(regions):
+    """
+    从检测区域推断 Cecc 类型: 多片段组 (同一 eccDNA ID 下 >1 region) 标记为 'C'
+    用于 CReSIL 等输出多片段信息但不输出 U/M 分类的工具
+
+    返回: {eccDNA_id: 'C'} (仅包含多片段组)
+    """
+    groups = defaultdict(int)
+    for r in regions:
+        groups[r.name] += 1
+    return {name: 'C' for name, count in groups.items() if count > 1}
 
 
 ECCDNA_RCA_DEDUP_THRESHOLD = 0.99
@@ -267,22 +309,28 @@ def parse_eccdna_rca(filepath):
 # 评估
 # ============================================================
 
-def evaluate_unified(truth_all, detected_regions, threshold=OVERLAP_THRESHOLD):
+def evaluate_unified(truth_all, detected_regions, threshold=OVERLAP_THRESHOLD,
+                     det_type_info=None):
     """
     统一评估: 一次匹配, 按类型拆分结果。
 
     匹配顺序:
     1. Cecc (严格: ALL fragments 必须匹配, similarity >= threshold)
-    2. Uecc / Mecc (reciprocal overlap >= threshold, 任一 fragment 匹配即可)
+    2. Uecc / Mecc (reciprocal overlap >= threshold, 使用 bisect 加速)
+
+    参数:
+        det_type_info: 可选, dict mapping eccDNA_id -> type code ('U'/'M'/'C')
+            CircleSeeker: 全部检测都有类型标签 (U/M/C)
+            CReSIL/CReSIL_HiFi: 仅多片段组标记为 'C'
+            其他工具: None (无类型信息)
 
     返回: {
         'Overall': {Truth, Detected, TP, FP, FN, Precision, Recall, F1},
-        'Uecc':    {Truth, TP, FN, Recall},   (如有)
-        'Mecc':    {Truth, TP, FN, Recall},   (如有)
-        'Cecc':    {Truth, TP, FN, Recall},   (如有)
+        'Uecc':    {Truth, TP, FN, Recall, [Precision, FP, F1]},
+        'Mecc':    {Truth, TP, FN, Recall, [Precision, FP, F1]},
+        'Cecc':    {Truth, TP, FN, Recall, [Precision, FP, F1]},
     }
-    Per-type 只输出 Recall: Precision/FP 在类型级别无意义
-    (无法确定 FP 检出属于哪个类型)
+    Per-type Precision/F1 仅在有 det_type_info 且该类型有预测时输出
     """
     truth_u = {k: v for k, v in truth_all.items() if v['type'] == 'U'}
     truth_m = {k: v for k, v in truth_all.items() if v['type'] == 'M'}
@@ -293,28 +341,45 @@ def evaluate_unified(truth_all, detected_regions, threshold=OVERLAP_THRESHOLD):
     for r in detected_regions:
         det_groups[r.name].append(r)
 
-    # 染色体索引
-    det_by_chr = defaultdict(list)
+    # 染色体索引 (按 start 排序, 用于 bisect 加速 Phase 2)
+    det_sorted_by_chr = defaultdict(list)
+    det_starts_by_chr = defaultdict(list)
     for r in detected_regions:
-        det_by_chr[r.chrom].append(r)
+        det_sorted_by_chr[r.chrom].append(r)
+    for chrom in det_sorted_by_chr:
+        det_sorted_by_chr[chrom].sort(key=lambda r: r.start)
+        det_starts_by_chr[chrom] = [r.start for r in det_sorted_by_chr[chrom]]
 
     matched_truth = {}   # truth_name -> type_code
-    matched_groups = set()
+    matched_groups = {}  # det_name -> truth_name
 
     # Phase 1: Cecc 严格匹配 (所有片段都必须匹配)
     if truth_c:
+        # 构建 Cecc truth 的染色体索引, 减少无效比较
+        truth_c_by_chrom = defaultdict(set)
+        for truth_name, tinfo in truth_c.items():
+            for frag in tinfo['fragments']:
+                truth_c_by_chrom[frag.chrom].add(truth_name)
+
         for det_name, det_frags in det_groups.items():
             if det_name in matched_groups:
                 continue
-            for truth_name, tinfo in truth_c.items():
+            # 仅检查与检测组共享染色体的 Cecc truth
+            candidate_names = set()
+            for r in det_frags:
+                candidate_names.update(truth_c_by_chrom.get(r.chrom, set()))
+            if not candidate_names:
+                continue
+            for truth_name in candidate_names:
                 if truth_name in matched_truth:
                     continue
-                if match_cecc_fragments(tinfo['fragments'], det_frags, threshold):
+                if match_cecc_fragments(truth_c[truth_name]['fragments'],
+                                        det_frags, threshold):
                     matched_truth[truth_name] = 'C'
-                    matched_groups.add(det_name)
+                    matched_groups[det_name] = truth_name
                     break
 
-    # Phase 2: Uecc / Mecc (reciprocal overlap)
+    # Phase 2: Uecc / Mecc (reciprocal overlap, bisect 加速)
     for tname, tinfo in truth_all.items():
         if tname in matched_truth:
             continue
@@ -322,12 +387,22 @@ def evaluate_unified(truth_all, detected_regions, threshold=OVERLAP_THRESHOLD):
             continue  # Cecc 已在 Phase 1 处理
         found = False
         for frag in tinfo['fragments']:
-            for dr in det_by_chr.get(frag.chrom, []):
+            chrom = frag.chrom
+            candidates = det_sorted_by_chr.get(chrom, [])
+            if not candidates:
+                continue
+            starts = det_starts_by_chr[chrom]
+            # reciprocal overlap >= 90% 时 det.start 在窄窗口内
+            margin = max(int(frag.length * 0.2), 1000)
+            left_idx = bisect.bisect_left(starts, frag.start - margin)
+            right_idx = bisect.bisect_right(starts, frag.start + margin)
+            for i in range(left_idx, right_idx):
+                dr = candidates[i]
                 if dr.name in matched_groups:
                     continue
                 if frag.reciprocal_overlap(dr, threshold):
                     matched_truth[tname] = tinfo['type']
-                    matched_groups.add(dr.name)
+                    matched_groups[dr.name] = tname
                     found = True
                     break
             if found:
@@ -351,7 +426,7 @@ def evaluate_unified(truth_all, detected_regions, threshold=OVERLAP_THRESHOLD):
         }
     }
 
-    # ---- Per-type: 只输出 Recall ----
+    # ---- Per-type ----
     for code, name, truth_sub in [
         ('U', 'Uecc', truth_u), ('M', 'Mecc', truth_m), ('C', 'Cecc', truth_c)
     ]:
@@ -359,13 +434,40 @@ def evaluate_unified(truth_all, detected_regions, threshold=OVERLAP_THRESHOLD):
             continue
         tp_t = sum(1 for tc in matched_truth.values() if tc == code)
         fn_t = len(truth_sub) - tp_t
-        rec_t = tp_t / len(truth_sub)
-        results[name] = {
+        rec_t = tp_t / len(truth_sub) if len(truth_sub) > 0 else 0
+
+        type_result = {
             'Truth': len(truth_sub), 'Detected': '',
             'TP': tp_t, 'FP': '', 'FN': fn_t,
             'Precision': '', 'Recall': round(rec_t, 4),
             'F1': ''
         }
+
+        # Per-type Precision: 需要检测类型信息
+        if det_type_info:
+            n_predicted = sum(1 for t in det_type_info.values() if t == code)
+            if n_predicted > 0:
+                # 预测为该类型 且 匹配到该类型 truth 的数量
+                tp_typed = 0
+                for gname, pred_type in det_type_info.items():
+                    if pred_type != code:
+                        continue
+                    if gname in matched_groups:
+                        truth_name = matched_groups[gname]
+                        if matched_truth.get(truth_name) == code:
+                            tp_typed += 1
+                fp_typed = n_predicted - tp_typed
+                prec_t = tp_typed / n_predicted
+                f1_t = (2 * prec_t * rec_t / (prec_t + rec_t)
+                        if (prec_t + rec_t) > 0 else 0)
+                type_result.update({
+                    'Detected': n_predicted,
+                    'FP': fp_typed,
+                    'Precision': round(prec_t, 4),
+                    'F1': round(f1_t, 4)
+                })
+
+        results[name] = type_result
 
     return results
 
@@ -509,15 +611,28 @@ def main():
                 truth_all = parse_truth(os.path.join(d, 'truth_all.bed'))
 
                 # ---- 解析各工具 ----
+                cs_regions, cs_type_info = parse_circleseeker(
+                    os.path.join(d, 'CircleSeeker_summary.csv'))
+                cresil_regions = parse_cresil(
+                    os.path.join(d, 'CReSIL_eccDNA_final.txt'))
+                cresil_hifi_regions = parse_cresil(
+                    os.path.join(d, 'CReSIL_HiFi_eccDNA_final.txt'))
+
                 tools_detected = {
                     'CircleMap': parse_circlemap(
                         os.path.join(d, 'CircleMap_filtered.bed')),
-                    'CircleSeeker': parse_circleseeker(
-                        os.path.join(d, 'CircleSeeker_summary.csv')),
-                    'CReSIL': parse_cresil(
-                        os.path.join(d, 'CReSIL_eccDNA_final.txt')),
-                    'CReSIL_HiFi': parse_cresil(
-                        os.path.join(d, 'CReSIL_HiFi_eccDNA_final.txt')),
+                    'CircleSeeker': cs_regions,
+                    'CReSIL': cresil_regions,
+                    'CReSIL_HiFi': cresil_hifi_regions,
+                    'ecc_finder': parse_ecc_finder(
+                        os.path.join(d, 'ecc_finder.csv')),
+                }
+
+                # 检测类型信息 (用于 per-type Precision)
+                tools_type_info = {
+                    'CircleSeeker': cs_type_info,
+                    'CReSIL': infer_cecc_types(cresil_regions),
+                    'CReSIL_HiFi': infer_cecc_types(cresil_hifi_regions),
                 }
 
                 rca_regions, rca_stats = parse_eccdna_rca(
@@ -534,7 +649,9 @@ def main():
                 # ---- 评估 (统一匹配, 按类型拆分) ----
                 for tool, detected in tools_detected.items():
                     redundancy = rca_redundancy if tool == 'eccDNA_RCA' else ''
-                    unified = evaluate_unified(truth_all, detected)
+                    type_info = tools_type_info.get(tool)
+                    unified = evaluate_unified(truth_all, detected,
+                                               det_type_info=type_info)
                     for eval_type, res in unified.items():
                         all_results.append({
                             'Genome': genome, 'Rep': rep, 'Depth': depth,
@@ -578,8 +695,10 @@ def main():
 注:
   - 统一匹配: 一次匹配所有 truth (Cecc 优先严格匹配, 再匹配 Uecc/Mecc)
   - Overall: Precision / Recall / F1 在全部类型上计算
-  - Per-type (Uecc/Mecc/Cecc): 只报告 Recall (TP/FN)
-    Precision 在类型级别无意义 (无法确定 FP 检出属于哪个类型)
+  - Per-type Recall: 所有工具均报告 (基于 truth 标签)
+  - Per-type Precision: 仅对有类型预测信息的工具报告
+      CircleSeeker: Uecc/Mecc/Cecc 全类型 Precision
+      CReSIL/CReSIL_HiFi: 仅 Cecc Precision (多片段组 = Cecc 候选)
   - 匹配规则: reciprocal overlap >= 90% (Uecc/Mecc)
   - Cecc: ALL 片段数量+位置都匹配才计为 TP (similarity >= 90%)
   - eccDNA_RCA: 原始结果经 99% reciprocal overlap 去冗余后评估

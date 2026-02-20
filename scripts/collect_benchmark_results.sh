@@ -122,6 +122,19 @@ for genome in "${GENOMES[@]}"; do
                 total=$((total + 1))
             fi
 
+            # ============================================================
+            # 7. ecc_finder (NGS 短读长工具)
+            #    主结果: *.csv (eccDNA 检测结果)
+            # ============================================================
+            ef_file="${src}/ecc_finder_output/${prefix}.csv"
+            if [ -f "${ef_file}" ]; then
+                cp -n "${ef_file}" "${dst}/ecc_finder.csv"
+                total=$((total + 1))
+            else
+                echo "  [MISS] ${ef_file}"
+                skipped=$((skipped + 1))
+            fi
+
             echo "[OK] ${genome}/${rep}/${depth}"
         done
     done
@@ -150,3 +163,4 @@ echo "    CReSIL_eccDNA_final.txt <- CReSIL (ONT) 结果"
 echo "    CReSIL_HiFi_eccDNA_final.txt <- CReSIL-HiFi 结果"
 echo "    eccDNA_RCA_info.tsv     <- eccDNA_RCA_nanopore 结果"
 echo "    eccDNA_RCA_eccDNA.fa    <- eccDNA_RCA_nanopore 序列"
+echo "    ecc_finder.csv          <- ecc_finder 结果"
