@@ -8,7 +8,7 @@ This repository contains the benchmark framework used to evaluate six eccDNA det
 
 | Tool | Version | Input Data | Read Type |
 |------|---------|-----------|-----------|
-| [CircleSeeker](https://github.com/YaoXinZH/CircleSeeker) | v1.0 | HiFi long reads | PacBio HiFi |
+| [CircleSeeker](https://github.com/leoxqy/CircleSeeker) | v1.0 | HiFi long reads | PacBio HiFi |
 | [CReSIL-HiFi](https://github.com/YxZhang-XHCY/cresil-hifi) | v1.2.0+hifi | HiFi long reads | PacBio HiFi |
 | [CReSIL](https://github.com/visanuwan/cresil) | v1.1.0 | ONT long reads | Oxford Nanopore |
 | [eccDNA_RCA_nanopore](https://github.com/icebert/eccDNA_RCA_nanopore) | commit [3f4b1dd](https://github.com/icebert/eccDNA_RCA_nanopore/commit/3f4b1dd) | ONT long reads | Oxford Nanopore |
@@ -295,11 +295,11 @@ CircleSeeker-benchmark/
 ### Results CSV Format
 
 **benchmark_results.csv** columns:
-- `Genome`, `Rep`, `Depth`, `Tool`, `EvalType`: Sample and evaluation identifiers
+- `Genome`, `Rep`, `Depth`, `Tool`, `EvalType`: Sample and evaluation identifiers. `EvalType` is one of: `Overall`, `Uecc`, `Mecc`, `Cecc`
 - `Truth`: Number of ground-truth eccDNA entries
-- `Detected`: Number of detected eccDNA groups (Overall only)
-- `TP`, `FP`, `FN`: True positives, false positives, false negatives (Overall only)
-- `Precision`, `Recall`, `F1`: Performance metrics (Precision/F1 for Overall only; Recall for all types)
+- `Detected`: Number of detected eccDNA groups
+- `TP`, `FP`, `FN`: True positives, false positives, false negatives
+- `Precision`, `Recall`, `F1`: Performance metrics. For `Overall` rows, all three are computed. For per-type rows (`Uecc`/`Mecc`/`Cecc`), `Recall` is always present; `Precision`/`F1` are present only for tools with type information (CircleSeeker: all three types; CReSIL/CReSIL-HiFi: Cecc only)
 - `Redundancy`: Detection redundancy ratio (eccDNA_RCA only)
 
 ## Reproducing the Benchmark
@@ -326,11 +326,13 @@ benchmark_collect/
 ├── ColCEN_5200/
 │   ├── rep1/
 │   │   ├── sequencing_10X/
-│   │   │   ├── truth_all.bed          # Ground truth
-│   │   │   ├── CircleSeeker_summary.csv
-│   │   │   ├── CircleMap_filtered.bed
-│   │   │   ├── CReSIL_eccDNA_final.txt
-│   │   │   └── eccDNA_RCA_info.tsv
+│   │   │   ├── truth_all.bed              # Ground truth
+│   │   │   ├── CircleSeeker_summary.csv   # CircleSeeker (HiFi)
+│   │   │   ├── CReSIL_HiFi_eccDNA_final.txt  # CReSIL-HiFi (HiFi)
+│   │   │   ├── CReSIL_eccDNA_final.txt    # CReSIL (ONT)
+│   │   │   ├── eccDNA_RCA_info.tsv        # eccDNA_RCA (ONT)
+│   │   │   ├── CircleMap_filtered.bed     # CircleMap (NGS)
+│   │   │   └── ecc_finder.csv             # ecc_finder (NGS)
 │   │   ├── sequencing_30X/
 │   │   └── sequencing_50X/
 │   ├── rep2/
@@ -352,7 +354,7 @@ This will output:
 
 ### Step 3 (Optional): Rerun Tools from Raw Data
 
-To rerun individual tools from simulated sequencing reads (not included in `benchmark_collect`), use the corresponding `run_*.sh` or `sbatch_*.sh` scripts. Refer to each script's header for required conda environments and dependencies.
+To rerun individual tools from simulated sequencing reads (not included in `benchmark_collect`), use the corresponding `sbatch_*.sh` SLURM scripts. Refer to each script's header for required conda environments and dependencies.
 
 ## Data Availability
 
