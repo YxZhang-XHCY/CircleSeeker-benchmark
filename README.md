@@ -21,7 +21,40 @@ This repository contains the benchmark framework used to evaluate six eccDNA det
 
 ## Simulated Datasets
 
-Benchmark data was generated on two T2T reference genomes with three datasets of varying complexity:
+### Simulation Tool
+
+Benchmark data was generated using the `ecc simulate` module of [eccToolkit](https://github.com/YxZhang-XHCY/eccToolkit). The simulation design was inspired by the benchmarking framework described in Gao et al. (*Nature Communications*, 2024; DOI: [10.1038/s41467-024-53496-8](https://doi.org/10.1038/s41467-024-53496-8)), which evaluated 7 analysis pipelines using simulated datasets derived from hg38 with ART (Illumina) and PBSIM2 (ONT) read simulators.
+
+The `ecc simulate` pipeline works in two stages:
+
+1. **Region simulation** (`sim-region`): Generates eccDNA regions from the reference genome and classifies them using minimap2 alignment. UeccDNA must have a single genomic match (>=99% identity, >=99% length consistency); MeccDNA must have multiple matches; CeccDNA are assembled from 2-5 non-contiguous fragments. Length distribution follows a lognormal distribution (mode ~400 bp) with a 5% tail component (5 kb--500 kb).
+2. **Read simulation** (`readsim`): Simulates rolling circle amplification (RCA) with random breakpoints, then generates sequencing reads using ART (Illumina paired-end), PBSIM2 (ONT with R94 model), and PBSIM2 with a built-in HiFi quality profile. Background linear DNA is also generated at a 1:1 ratio as negative controls.
+
+Our simulation extends the Gao et al. approach with:
+
+- **T2T reference genomes** (CHM13v2.0 and ColCEN) instead of hg38, providing a more complete and accurate genomic background
+- **Explicit eccDNA type control**: independently specifying the number of unique-mapping (`-u`), multi-mapping (`-m`), and chimeric (`-c`) eccDNA, with minimap2-based classification validation, enabling fine-grained per-type evaluation
+- **Multi-platform read generation**: simultaneously producing matched HiFi, ONT, and Illumina paired-end reads from the same eccDNA set, allowing direct cross-platform comparison under identical conditions
+- **HiFi long-read support**: the original framework only covered Illumina and ONT platforms
+
+Simulation commands used:
+
+```bash
+# Arabidopsis dataset: 4000 Uecc + 1000 Mecc + 200 Cecc
+ecc simulate -r ColCEN.fasta -o ara_5200 \
+    -u 4000 -m 1000 -c 200 \
+    --replicates 3 --cov 10 --cov 30 --cov 50 -t 24
+
+# Human complex dataset: 20000 Uecc + 2000 Mecc + 1000 Cecc
+ecc simulate -r chm13v2.0.fa -o human_23000 \
+    -u 20000 -m 2000 -c 1000 \
+    --replicates 3 --cov 10 --cov 30 --cov 50 -t 24
+
+# Human simple dataset: 10000 Uecc only
+ecc simulate -r chm13v2.0.fa -o human_10000_simple \
+    -u 10000 \
+    --replicates 3 --cov 10 --cov 30 --cov 50 -t 24
+```
 
 ### Reference Genomes
 
@@ -243,8 +276,10 @@ CircleSeeker-benchmark/
 │   ├── collect_benchmark_results.sh      # Collect tool outputs into unified directory
 │   ├── sbatch_CircleMap_Enhanced.sh     # SLURM job: CircleMap Enhanced
 │   ├── sbatch_CircleSeeker.sh           # SLURM job: CircleSeeker
-│   ├── sbatch_CReSIL.sh                # SLURM job: CReSIL
-│   └── sbatch_eccDNA_RCA_nanopore.sh   # SLURM job: eccDNA_RCA
+│   ├── sbatch_CReSIL.sh                # SLURM job: CReSIL (ONT)
+│   ├── sbatch_CReSIL_HiFi.sh           # SLURM job: CReSIL-HiFi
+│   ├── sbatch_eccDNA_RCA_nanopore.sh   # SLURM job: eccDNA_RCA
+│   └── sbatch_ecc_finder.sh            # SLURM job: ecc_finder
 └── results/
     ├── benchmark_results.csv             # Full benchmark results (all conditions)
     └── benchmark_rca_stats.csv           # eccDNA_RCA redundancy statistics
