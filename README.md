@@ -81,6 +81,12 @@ size-dependent recovery or phi29 amplification. Results therefore support
 caller performance under the stated in-silico conditions, not absolute
 experimental recovery efficiency.
 
+For CeccDNA, the non-collinear truth fragments were joined into the circular
+template before concatemer generation. These are truth-positive multi-fragment
+circle reads. The archived benchmark did not enable a separate stochastic
+inter-template phi29-chimera injection step, so it should not be interpreted as
+modelling the full false-chimera spectrum of an experimental RCA reaction.
+
 The commands used to generate the three truth populations were:
 
 ```bash
