@@ -1,0 +1,7 @@
+rank_by_f1,Genome,Depth,Tool,tool_display,EvalType,n_replicates,Truth_mean,Detected_mean,TP_mean,FP_mean,FN_mean,Precision_mean,Recall_mean,F1_mean,Redundancy_mean,Truth_sd,Detected_sd,TP_sd,FP_sd,FN_sd,Precision_sd,Recall_sd,F1_sd,Redundancy_sd
+1,human_U_10000,sequencing_30X,CircleSeeker,CircleSeeker,Overall,3,10000.0,9893.0,9853.6667,39.3333,146.3333,0.996,0.9854,0.9907,,0.0,1.0,7.7675,8.7369,7.7675,0.0009,0.0008,0.0009,
+2,human_U_10000,sequencing_30X,CReSIL_HiFi,CReSIL-HiFi (author-created HiFi adaptation),Overall,3,10000.0,8975.0,8953.3333,21.6667,1046.6667,0.9976,0.8953,0.9437,,0.0,59.1016,62.6924,8.3865,62.6924,0.001,0.0063,0.0037,
+3,human_U_10000,sequencing_30X,CReSIL,CReSIL,Overall,3,10000.0,8165.0,8061.0,104.0,1939.0,0.9872,0.8061,0.8875,,0.0,85.8545,86.7122,2.0,86.7122,0.0003,0.0087,0.0054,
+4,human_U_10000,sequencing_30X,CircleMap,Circle-Map,Overall,3,10000.0,8015.3333,7877.3333,138.0,2122.6667,0.9828,0.7877,0.8745,,0.0,33.126,33.5012,8.6603,33.5012,0.0011,0.0034,0.0022,
+5,human_U_10000,sequencing_30X,eccDNA_RCA,eccDNA_RCA_nanopore,Overall,3,10000.0,11706.0,8528.3333,3177.6667,1471.6667,0.7286,0.8528,0.7858,3.2533,0.0,43.5775,17.4738,26.5393,17.4738,0.0013,0.0017,0.0003,0.0306
+6,human_U_10000,sequencing_30X,ecc_finder,ecc_finder,Overall,3,10000.0,3786.3333,3559.6667,226.6667,6440.3333,0.9401,0.356,0.5164,,0.0,10.5987,5.5076,6.6583,5.5076,0.0016,0.0006,0.0005,

@@ -15,7 +15,7 @@ conda activate circleseeker
 
 THREADS=16
 # === 用户配置 ===
-# 请修改为实际的数据根目录（包含 ColCEN_5200/, human_23000/, human_10000_simple/ 子目录）
+# 请修改为实际的数据根目录（包含 ara_UMC_5200/, human_23000/, human_U_10000/ 子目录）
 BASE_DIR="/path/to/eccDNA_simulation"
 REF_DIR="${BASE_DIR}/Ref"
 
@@ -31,7 +31,7 @@ if [ "${SLURM_ARRAY_TASK_ID}" -eq 0 ]; then
 fi
 
 # 构建任务列表: 3 datasets x 3 reps x 3 depths = 27 tasks
-DATASETS=("ColCEN_5200" "human_23000" "human_10000_simple")
+DATASETS=("ara_UMC_5200" "human_23000" "human_U_10000")
 REPS=("rep1" "rep2" "rep3")
 DEPTHS=("sequencing_10X" "sequencing_30X" "sequencing_50X")
 
@@ -46,7 +46,7 @@ REP=${REPS[$R_IDX]}
 DEPTH=${DEPTHS[$P_IDX]}
 
 # 设置参考基因组
-if [ "$DATASET" == "ColCEN_5200" ]; then
+if [ "$DATASET" == "ara_UMC_5200" ]; then
     REF="${REF_DIR}/ColCEN.fasta"
 else
     REF="${REF_DIR}/chm13v2.0.fa"

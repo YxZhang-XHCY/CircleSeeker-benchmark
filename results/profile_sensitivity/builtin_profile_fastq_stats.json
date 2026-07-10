@@ -1,0 +1,13 @@
+{
+  "fastq": "benchmark_source/eccToolkit/src/ecctoolkit/simulate/resource/profiles/sample_profile_HeLa_HiFi_2k.fastq",
+  "input_format": "pbsim-profile",
+  "n_reads": 2000,
+  "total_bases": 26851154,
+  "length_min": 2858,
+  "length_max": 51185,
+  "length_mean": 13425.577,
+  "length_sd": 4010.552748530478,
+  "length_median": 12666.5,
+  "length_n50": 13786,
+  "mean_base_qscore": 38.87049163697024
+}

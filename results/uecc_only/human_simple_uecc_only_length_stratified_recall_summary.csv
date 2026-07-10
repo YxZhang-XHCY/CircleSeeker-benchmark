@@ -1,0 +1,73 @@
+Dataset,Depth,Tool,tool_display,LengthBin,n_replicates,Truth_mean,TP_mean,Recall_mean,Truth_sd,TP_sd,Recall_sd
+human_U_10000,sequencing_10X,CircleSeeker,CircleSeeker,<1kb,3,5824.0,5491.0,0.9429,19.0788,13.8924,0.002
+human_U_10000,sequencing_10X,CircleSeeker,CircleSeeker,1-5kb,3,3564.6667,3399.0,0.9535,8.3267,2.0,0.0017
+human_U_10000,sequencing_10X,CircleSeeker,CircleSeeker,5-50kb,3,347.0,276.6667,0.7971,18.5203,16.9214,0.0079
+human_U_10000,sequencing_10X,CircleSeeker,CircleSeeker,>50kb,3,264.3333,168.3333,0.6375,19.3993,9.0738,0.016
+human_U_10000,sequencing_10X,CReSIL_HiFi,CReSIL-HiFi (author-created HiFi adaptation),<1kb,3,5824.0,3823.0,0.6564,19.0788,20.9523,0.0049
+human_U_10000,sequencing_10X,CReSIL_HiFi,CReSIL-HiFi (author-created HiFi adaptation),1-5kb,3,3564.6667,2323.6667,0.6519,8.3267,42.7824,0.0126
+human_U_10000,sequencing_10X,CReSIL_HiFi,CReSIL-HiFi (author-created HiFi adaptation),5-50kb,3,347.0,253.0,0.7295,18.5203,13.2288,0.025
+human_U_10000,sequencing_10X,CReSIL_HiFi,CReSIL-HiFi (author-created HiFi adaptation),>50kb,3,264.3333,170.0,0.6435,19.3993,10.3923,0.0088
+human_U_10000,sequencing_10X,CReSIL,CReSIL,<1kb,3,5824.0,2641.3333,0.4536,19.0788,12.6623,0.0036
+human_U_10000,sequencing_10X,CReSIL,CReSIL,1-5kb,3,3564.6667,2201.6667,0.6177,8.3267,50.5404,0.0152
+human_U_10000,sequencing_10X,CReSIL,CReSIL,5-50kb,3,347.0,229.3333,0.6603,18.5203,19.6044,0.028
+human_U_10000,sequencing_10X,CReSIL,CReSIL,>50kb,3,264.3333,149.0,0.5639,19.3993,9.8489,0.0081
+human_U_10000,sequencing_10X,eccDNA_RCA,eccDNA_RCA_nanopore,<1kb,3,5824.0,4211.6667,0.7231,19.0788,46.3717,0.0077
+human_U_10000,sequencing_10X,eccDNA_RCA,eccDNA_RCA_nanopore,1-5kb,3,3564.6667,3035.6667,0.8516,8.3267,40.501,0.012
+human_U_10000,sequencing_10X,eccDNA_RCA,eccDNA_RCA_nanopore,5-50kb,3,347.0,80.0,0.2295,18.5203,14.1067,0.0292
+human_U_10000,sequencing_10X,eccDNA_RCA,eccDNA_RCA_nanopore,>50kb,3,264.3333,0.0,0.0,19.3993,0.0,0.0
+human_U_10000,sequencing_10X,CircleMap,Circle-Map,<1kb,3,5824.0,23.0,0.0039,19.0788,7.0,0.0012
+human_U_10000,sequencing_10X,CircleMap,Circle-Map,1-5kb,3,3564.6667,720.6667,0.2022,8.3267,10.6927,0.0034
+human_U_10000,sequencing_10X,CircleMap,Circle-Map,5-50kb,3,347.0,202.3333,0.5834,18.5203,8.1445,0.0113
+human_U_10000,sequencing_10X,CircleMap,Circle-Map,>50kb,3,264.3333,152.3333,0.5764,19.3993,10.6927,0.0053
+human_U_10000,sequencing_10X,ecc_finder,ecc_finder,<1kb,3,5824.0,21.6667,0.0037,19.0788,7.3711,0.0012
+human_U_10000,sequencing_10X,ecc_finder,ecc_finder,1-5kb,3,3564.6667,602.6667,0.1691,8.3267,11.9304,0.0037
+human_U_10000,sequencing_10X,ecc_finder,ecc_finder,5-50kb,3,347.0,89.6667,0.2589,18.5203,11.6762,0.0359
+human_U_10000,sequencing_10X,ecc_finder,ecc_finder,>50kb,3,264.3333,79.6667,0.302,19.3993,9.0738,0.0341
+human_U_10000,sequencing_30X,CircleSeeker,CircleSeeker,<1kb,3,5824.0,5761.6667,0.9893,19.0788,24.0901,0.0022
+human_U_10000,sequencing_30X,CircleSeeker,CircleSeeker,1-5kb,3,3564.6667,3539.0,0.9928,8.3267,9.5394,0.0021
+human_U_10000,sequencing_30X,CircleSeeker,CircleSeeker,5-50kb,3,347.0,323.0,0.9305,18.5203,21.0,0.0115
+human_U_10000,sequencing_30X,CircleSeeker,CircleSeeker,>50kb,3,264.3333,230.0,0.8702,19.3993,17.0587,0.0117
+human_U_10000,sequencing_30X,CReSIL_HiFi,CReSIL-HiFi (author-created HiFi adaptation),<1kb,3,5824.0,5181.0,0.8896,19.0788,31.7962,0.0046
+human_U_10000,sequencing_30X,CReSIL_HiFi,CReSIL-HiFi (author-created HiFi adaptation),1-5kb,3,3564.6667,3232.6667,0.9069,8.3267,21.3854,0.0081
+human_U_10000,sequencing_30X,CReSIL_HiFi,CReSIL-HiFi (author-created HiFi adaptation),5-50kb,3,347.0,309.6667,0.8919,18.5203,21.5716,0.0153
+human_U_10000,sequencing_30X,CReSIL_HiFi,CReSIL-HiFi (author-created HiFi adaptation),>50kb,3,264.3333,230.0,0.8698,19.3993,18.735,0.0128
+human_U_10000,sequencing_30X,CReSIL,CReSIL,<1kb,3,5824.0,4372.0,0.7507,19.0788,42.7902,0.0082
+human_U_10000,sequencing_30X,CReSIL,CReSIL,1-5kb,3,3564.6667,3161.6667,0.8869,8.3267,21.5484,0.0081
+human_U_10000,sequencing_30X,CReSIL,CReSIL,5-50kb,3,347.0,305.6667,0.8801,18.5203,23.6291,0.0217
+human_U_10000,sequencing_30X,CReSIL,CReSIL,>50kb,3,264.3333,221.6667,0.8386,19.3993,16.4418,0.0064
+human_U_10000,sequencing_30X,eccDNA_RCA,eccDNA_RCA_nanopore,<1kb,3,5824.0,4989.0,0.8566,19.0788,16.5227,0.0004
+human_U_10000,sequencing_30X,eccDNA_RCA,eccDNA_RCA_nanopore,1-5kb,3,3564.6667,3406.0,0.9555,8.3267,13.7477,0.0052
+human_U_10000,sequencing_30X,eccDNA_RCA,eccDNA_RCA_nanopore,5-50kb,3,347.0,133.3333,0.3835,18.5203,15.5027,0.0262
+human_U_10000,sequencing_30X,eccDNA_RCA,eccDNA_RCA_nanopore,>50kb,3,264.3333,0.0,0.0,19.3993,0.0,0.0
+human_U_10000,sequencing_30X,CircleMap,Circle-Map,<1kb,3,5824.0,4102.3333,0.7044,19.0788,12.6623,0.0014
+human_U_10000,sequencing_30X,CircleMap,Circle-Map,1-5kb,3,3564.6667,3251.0,0.912,8.3267,24.2487,0.0066
+human_U_10000,sequencing_30X,CircleMap,Circle-Map,5-50kb,3,347.0,303.0,0.8727,18.5203,20.664,0.0138
+human_U_10000,sequencing_30X,CircleMap,Circle-Map,>50kb,3,264.3333,221.0,0.836,19.3993,16.8226,0.0082
+human_U_10000,sequencing_30X,ecc_finder,ecc_finder,<1kb,3,5824.0,1874.0,0.3217,19.0788,44.7102,0.0066
+human_U_10000,sequencing_30X,ecc_finder,ecc_finder,1-5kb,3,3564.6667,1415.0,0.3969,8.3267,32.4191,0.0092
+human_U_10000,sequencing_30X,ecc_finder,ecc_finder,5-50kb,3,347.0,120.6667,0.3483,18.5203,11.5036,0.0351
+human_U_10000,sequencing_30X,ecc_finder,ecc_finder,>50kb,3,264.3333,150.0,0.5691,19.3993,4.3589,0.0367
+human_U_10000,sequencing_50X,CircleSeeker,CircleSeeker,<1kb,3,5824.0,5785.3333,0.9934,19.0788,25.658,0.0013
+human_U_10000,sequencing_50X,CircleSeeker,CircleSeeker,1-5kb,3,3564.6667,3553.6667,0.9969,8.3267,9.815,0.0007
+human_U_10000,sequencing_50X,CircleSeeker,CircleSeeker,5-50kb,3,347.0,330.3333,0.9517,18.5203,20.4287,0.0087
+human_U_10000,sequencing_50X,CircleSeeker,CircleSeeker,>50kb,3,264.3333,233.6667,0.8843,19.3993,15.695,0.0107
+human_U_10000,sequencing_50X,CReSIL_HiFi,CReSIL-HiFi (author-created HiFi adaptation),<1kb,3,5824.0,5329.3333,0.9151,19.0788,26.8576,0.0032
+human_U_10000,sequencing_50X,CReSIL_HiFi,CReSIL-HiFi (author-created HiFi adaptation),1-5kb,3,3564.6667,3314.0,0.9297,8.3267,13.0767,0.0058
+human_U_10000,sequencing_50X,CReSIL_HiFi,CReSIL-HiFi (author-created HiFi adaptation),5-50kb,3,347.0,316.3333,0.9114,18.5203,19.1398,0.0076
+human_U_10000,sequencing_50X,CReSIL_HiFi,CReSIL-HiFi (author-created HiFi adaptation),>50kb,3,264.3333,234.0,0.885,19.3993,18.735,0.0122
+human_U_10000,sequencing_50X,CReSIL,CReSIL,<1kb,3,5824.0,4779.0,0.8206,19.0788,26.9629,0.0053
+human_U_10000,sequencing_50X,CReSIL,CReSIL,1-5kb,3,3564.6667,3262.6667,0.9153,8.3267,21.4554,0.0081
+human_U_10000,sequencing_50X,CReSIL,CReSIL,5-50kb,3,347.0,313.3333,0.9024,18.5203,22.5019,0.0172
+human_U_10000,sequencing_50X,CReSIL,CReSIL,>50kb,3,264.3333,231.0,0.874,19.3993,16.4621,0.0034
+human_U_10000,sequencing_50X,eccDNA_RCA,eccDNA_RCA_nanopore,<1kb,3,5824.0,5207.0,0.8941,19.0788,19.0,0.0004
+human_U_10000,sequencing_50X,eccDNA_RCA,eccDNA_RCA_nanopore,1-5kb,3,3564.6667,3457.0,0.9698,8.3267,7.5498,0.0033
+human_U_10000,sequencing_50X,eccDNA_RCA,eccDNA_RCA_nanopore,5-50kb,3,347.0,152.6667,0.4388,18.5203,21.5484,0.0413
+human_U_10000,sequencing_50X,eccDNA_RCA,eccDNA_RCA_nanopore,>50kb,3,264.3333,0.0,0.0,19.3993,0.0,0.0
+human_U_10000,sequencing_50X,CircleMap,Circle-Map,<1kb,3,5824.0,4484.0,0.7699,19.0788,8.8882,0.0034
+human_U_10000,sequencing_50X,CircleMap,Circle-Map,1-5kb,3,3564.6667,3409.6667,0.9565,8.3267,1.5275,0.0018
+human_U_10000,sequencing_50X,CircleMap,Circle-Map,5-50kb,3,347.0,323.6667,0.9322,18.5203,22.2785,0.0165
+human_U_10000,sequencing_50X,CircleMap,Circle-Map,>50kb,3,264.3333,238.6667,0.903,19.3993,17.2143,0.0045
+human_U_10000,sequencing_50X,ecc_finder,ecc_finder,<1kb,3,5824.0,2258.6667,0.3878,19.0788,30.8275,0.0044
+human_U_10000,sequencing_50X,ecc_finder,ecc_finder,1-5kb,3,3564.6667,1655.3333,0.4644,8.3267,46.3069,0.0136
+human_U_10000,sequencing_50X,ecc_finder,ecc_finder,5-50kb,3,347.0,142.6667,0.4112,18.5203,17.4738,0.0448
+human_U_10000,sequencing_50X,ecc_finder,ecc_finder,>50kb,3,264.3333,162.6667,0.617,19.3993,8.9629,0.0448

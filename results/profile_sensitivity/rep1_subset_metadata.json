@@ -1,0 +1,10 @@
+{
+  "source_lib": "benchmark_source/human_U_10000/rep1/sequencing_30X/sim_ecc_rep1.lib.csv",
+  "source_truth": "benchmark_source/human_U_10000/rep1/region/sim_ecc_rep1.all.bed",
+  "seed": 20260711,
+  "n_circular": 2000,
+  "n_background": 2000,
+  "selected_total": 4000,
+  "tempcov_mean_circular": 1.0110017045959825,
+  "tempcov_mean_background": 30.131212023477154
+}

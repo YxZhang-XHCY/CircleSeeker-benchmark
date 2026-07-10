@@ -1,374 +1,211 @@
-# CircleSeeker-benchmark
+# CircleSeeker benchmark
 
-Comprehensive benchmarking of eccDNA detection tools on simulated long-read and short-read sequencing data, covering three types of eccDNA: unique-mapping (Uecc), multi-mapping (Mecc), and chimeric (Cecc).
+This repository contains the simulation description, tool-run scripts,
+evaluation code and metric tables used for the platform-matched CircleSeeker
+benchmark. It also contains the round-3 analyses that separate the common
+UeccDNA detection task from the UMC-aware stress tests and test sensitivity to
+the study-derived PacBio HiFi sampling profile.
 
-## Overview
+## Interpretation of the benchmark
 
-This repository contains the benchmark framework used to evaluate six eccDNA detection tools across three sequencing platforms:
+The three scenarios answer different questions and should not be pooled into a
+single generic ranking.
 
-| Tool | Version | Input Data | Read Type |
-|------|---------|-----------|-----------|
-| [CircleSeeker](https://github.com/leoxqy/CircleSeeker) | v1.0 | HiFi long reads | PacBio HiFi |
-| [CReSIL-HiFi](https://github.com/YxZhang-XHCY/cresil-hifi) | v1.2.0+hifi | HiFi long reads | PacBio HiFi |
-| [CReSIL](https://github.com/visanuwan/cresil) | v1.1.0 | ONT long reads | Oxford Nanopore |
-| [eccDNA_RCA_nanopore](https://github.com/icebert/eccDNA_RCA_nanopore) | commit [3f4b1dd](https://github.com/icebert/eccDNA_RCA_nanopore/commit/3f4b1dd) | ONT long reads | Oxford Nanopore |
-| [Circle-Map](https://github.com/iprada/Circle-Map) + [Circle-Map-cpp](https://github.com/BGI-Qingdao/Circle-Map-cpp) | v1.1.4 + v1.0.0 | NGS paired-end reads | Illumina |
-| [ecc_finder](https://github.com/njaupan/ecc_finder) | v1.1.0 | NGS paired-end reads | Illumina |
+- **Human-Simple (`human_U_10000`)** contains 10,000 UeccDNAs and no MeccDNA
+  or CeccDNA. This is the primary common head-to-head detection task because
+  precision, recall and F1 have the same UeccDNA-only interpretation for all
+  six tools.
+- **Human-Complex (`human_23000`)** contains 20,000 UeccDNAs, 2,000 MeccDNAs
+  and 1,000 CeccDNAs.
+- **Arabidopsis (`ara_UMC_5200`)** contains 4,000 UeccDNAs, 1,000 MeccDNAs
+  and 200 CeccDNAs.
+- Human-Complex and Arabidopsis are **UMC-aware stress tests**. Their overall
+  and per-type results assess recovery under multi-mapping and chimeric truth;
+  they are not presented as the primary generic cross-tool comparison.
+- MeccDNA and CeccDNA values for Human-Simple are not applicable, not zero,
+  because those truth classes are absent from that scenario.
 
-### Excluded Tool
+`CReSIL-HiFi` is an in-house HiFi adaptation of CReSIL created by the authors
+for this benchmark. It is not an independently published comparator.
 
-[CIDER-Seq2](https://github.com/devang-mehta/ciderseq2) (v2.0) was initially considered but excluded from the benchmark. Its MUSCLE-based de-concatenation (O(n·L²) per read for read length L) and exhaustive BLAST with O(n²) hit reordering are intractable for large eukaryotic genomes. Even after replacing the DeConcat step with TideHunter, the downstream BLAST-based eccDNA detection remained infeasible for human genome-scale data (>300K reads, 3.1 Gb reference).
+## Tools and native input platforms
 
-## Simulated Datasets
+| Tool | Archived benchmark version | Input |
+|---|---|---|
+| [CircleSeeker](https://github.com/leoxqy/CircleSeeker) | v1.1.2.dev0 | PacBio HiFi |
+| [CReSIL-HiFi](https://github.com/YxZhang-XHCY/cresil-hifi) | v1.2.0+hifi; author-created adaptation | PacBio HiFi |
+| [CReSIL](https://github.com/visanuwan/cresil) | v1.1.0 | Oxford Nanopore |
+| [eccDNA_RCA_nanopore](https://github.com/icebert/eccDNA_RCA_nanopore) | commit `3f4b1dd` | Oxford Nanopore |
+| [Circle-Map](https://github.com/iprada/Circle-Map) with [Circle-Map-cpp](https://github.com/BGI-Qingdao/Circle-Map-cpp) | v1.1.4 with v1.0.0 | Illumina paired-end |
+| [ecc_finder](https://github.com/njaupan/ecc_finder) | v1.1.0 | Illumina paired-end |
 
-### Simulation Tool
+Each tool received reads from its intended sequencing platform. Platform
+matching is more realistic than feeding one read type to every caller, but it
+also means differences reflect the complete platform-plus-caller workflow and
+should not be interpreted as an isolated software-only comparison.
 
-Benchmark data was generated using the `ecc simulate` module of [eccToolkit](https://github.com/YxZhang-XHCY/eccToolkit). The simulation design was inspired by the benchmarking framework described in Gao et al. (*Nature Communications*, 2024; DOI: [10.1038/s41467-024-53496-8](https://doi.org/10.1038/s41467-024-53496-8)), which evaluated 7 analysis pipelines using simulated datasets derived from hg38 with ART (Illumina) and PBSIM2 (ONT) read simulators.
+## Simulation design
 
-The `ecc simulate` pipeline works in two stages:
+The benchmark used the `ecc simulate` module of
+[eccToolkit](https://github.com/YxZhang-XHCY/eccToolkit), following the general
+simulation framework of Gao et al.
+([Nature Communications, 2024](https://doi.org/10.1038/s41467-024-53496-8)).
+Human truth was generated against T2T-CHM13v2.0 and plant truth against
+ColCEN.
 
-1. **Region simulation** (`sim-region`): Generates eccDNA regions from the reference genome and classifies them using minimap2 alignment. UeccDNA must have a single genomic match (>=99% identity, >=99% length consistency); MeccDNA must have multiple matches; CeccDNA are assembled from 2-5 non-contiguous fragments. Length distribution follows a lognormal distribution (mode ~400 bp) with a 5% tail component (5 kb--500 kb).
-2. **Read simulation** (`readsim`): Simulates rolling circle amplification (RCA) with random breakpoints, then generates sequencing reads using ART (Illumina paired-end), PBSIM2 (ONT with R94 model), and PBSIM2 with a built-in HiFi quality profile. Background linear DNA is also generated at a 1:1 ratio as negative controls.
+1. UeccDNA truth entries were sampled as single contiguous genomic intervals.
+2. MeccDNA candidates were sampled from repeat-rich regions and retained when
+   their simulated sequence mapped to multiple loci under minimap2-based
+   criteria.
+3. CeccDNA candidates were assembled from two to five non-collinear genomic
+   fragments, including intra- and inter-chromosomal structures.
+4. RCA-derived long reads contained variable concatemer copy numbers, random
+   starting offsets and random linearisation breakpoints.
+5. Circular reads were mixed 1:1 with simulated linear genomic-background
+   reads.
+6. Each scenario was generated at 10x, 30x and 50x template coverage with
+   three independent replicates. Matched HiFi, Nanopore and Illumina read sets
+   were generated for each condition.
 
-Our simulation extends the Gao et al. approach with:
+The main HiFi simulation used the eccToolkit `HeLa_HiFi_2k` PBSIM2 sampling
+profile, which was derived from 2,000 empirical HiFi reads. This affects the
+simulated HiFi read-length, quality and sampling distributions; it does not
+define the ground-truth circle coordinates or UMC composition.
 
-- **T2T reference genomes** (CHM13v2.0 and ColCEN) instead of hg38, providing a more complete and accurate genomic background
-- **Explicit eccDNA type control**: independently specifying the number of unique-mapping (`-u`), multi-mapping (`-m`), and chimeric (`-c`) eccDNA, with minimap2-based classification validation, enabling fine-grained per-type evaluation
-- **Multi-platform read generation**: simultaneously producing matched HiFi, ONT, and Illumina paired-end reads from the same eccDNA set, allowing direct cross-platform comparison under identical conditions
-- **HiFi long-read support**: the original framework only covered Illumina and ONT platforms
+### Scope of the simulator
 
-Simulation commands used:
+The simulation represents circle structure, RCA concatemers, platform-specific
+read errors and a linear-background challenge. It does not model every
+biochemical feature of cell lysis, chromatin accessibility, circle extraction,
+size-dependent recovery or phi29 amplification. Results therefore support
+caller performance under the stated in-silico conditions, not absolute
+experimental recovery efficiency.
+
+The commands used to generate the three truth populations were:
 
 ```bash
-# Arabidopsis dataset: 4000 Uecc + 1000 Mecc + 200 Cecc
-ecc simulate -r ColCEN.fasta -o ara_5200 \
-    -u 4000 -m 1000 -c 200 \
-    --replicates 3 --cov 10 --cov 30 --cov 50 -t 24
+ecc simulate -r chm13v2.0.fa -o human_U_10000 \
+  -u 10000 --replicates 3 --cov 10 --cov 30 --cov 50 -t 24
 
-# Human complex dataset: 20000 Uecc + 2000 Mecc + 1000 Cecc
 ecc simulate -r chm13v2.0.fa -o human_23000 \
-    -u 20000 -m 2000 -c 1000 \
-    --replicates 3 --cov 10 --cov 30 --cov 50 -t 24
+  -u 20000 -m 2000 -c 1000 \
+  --replicates 3 --cov 10 --cov 30 --cov 50 -t 24
 
-# Human simple dataset: 10000 Uecc only
-ecc simulate -r chm13v2.0.fa -o human_10000_simple \
-    -u 10000 \
-    --replicates 3 --cov 10 --cov 30 --cov 50 -t 24
+ecc simulate -r ColCEN.fasta -o ara_UMC_5200 \
+  -u 4000 -m 1000 -c 200 \
+  --replicates 3 --cov 10 --cov 30 --cov 50 -t 24
 ```
 
-### Reference Genomes
+## Evaluation
 
-| Genome | Species | Description |
-|--------|---------|-------------|
-| Human T2T (CHM13v2.0) | *Homo sapiens* | T2T human reference genome |
-| ColCEN | *Arabidopsis thaliana* | T2T Arabidopsis genome with centromere regions |
+The evaluation uses detection groups rather than counting every output
+fragment as an independent call.
 
-### Dataset Composition
+The core evaluator uses the Python standard library. The synthetic-profile
+utility requires Python 3.10 or later, NumPy and pandas; PBSIM2 and CircleSeeker
+are additionally required for its `simulate` subcommand.
 
-| Dataset | Genome | Uecc | Mecc | Cecc | Total |
-|---------|--------|------|------|------|-------|
-| human_10000_simple | Human T2T | 10,000 | - | - | 10,000 |
-| human_23000 | Human T2T | 20,000 | 2,000 | 1,000 | 23,000 |
-| ColCEN_5200 | Arabidopsis T2T | 4,000 | 1,000 | 200 | 5,200 |
+1. CeccDNA truth is evaluated first. A CeccDNA is recovered only when all of
+   its fragments are present in one detected group with similarity at least
+   0.90, where similarity is overlap divided by the shorter interval length.
+2. Remaining detections are matched to UeccDNA and MeccDNA truth by at least
+   0.90 reciprocal overlap.
+3. Overall precision, recall and F1 are calculated from grouped detections.
+4. Per-type recall is reported where that truth class exists. Per-type
+   precision is reported only when the output contains sufficient structural
+   or explicit type information; an absent value is not treated as zero.
+5. Read-level eccDNA_RCA output is collapsed at 99% reciprocal overlap before
+   evaluation; the residual redundancy ratio is retained in the result table.
 
-### eccDNA Types
+Run the evaluator on a populated benchmark collection with:
 
-- **Uecc (Unique eccDNA)**: eccDNA derived from unique genomic regions with a single mapping site
-- **Mecc (Multi-mapping eccDNA)**: eccDNA originating from repetitive regions with multiple mapping sites in the genome
-- **Cecc (Chimeric eccDNA)**: eccDNA composed of multiple non-contiguous genomic fragments joined together
-
-### Sequencing Simulation
-
-Each dataset was simulated at three sequencing depths with three biological replicates:
-
-- **Depths**: 10X, 30X, 50X
-- **Replicates**: 3 per condition
-- **Total samples**: 3 datasets x 3 depths x 3 replicates = **27 samples**
-
-Each sample includes matched simulated reads for all applicable sequencing platforms (HiFi, ONT, Illumina paired-end).
-
-## Evaluation Methodology
-
-### Unified Matching Strategy
-
-Since existing eccDNA detection tools output only genomic coordinate intervals without eccDNA type classification (unique / multi-mapping / chimeric), we designed a unified two-phase evaluation framework for fair cross-tool comparison:
-
-1. **Phase 1 — Cecc (strict matching)**: Each detected eccDNA group is first tested against chimeric truth entries. A Cecc truth is matched only if **ALL** of its fragments are found in the detected group (similarity >= 90%, defined as overlap / min(length1, length2)).
-
-2. **Phase 2 — Uecc/Mecc (reciprocal overlap)**: Remaining unmatched detected groups are matched against Uecc and Mecc truth entries using reciprocal overlap >= 90% (overlap must cover >= 90% of both the truth fragment and the detected region).
-
-### Metrics
-
-- **Overall**: Precision, Recall, and F1 are computed across all eccDNA types combined. This is the primary cross-tool comparison metric.
-- **Per-type Recall (Uecc/Mecc/Cecc)**: Leveraging the type labels in simulated ground truth, per-type Recall reveals how well each tool detects eccDNA of different structural complexities. Per-type Precision is **not** reported for most tools, because their outputs do not carry type labels — false positive detections cannot be attributed to a specific eccDNA type.
-- **Per-type Precision (selected tools)**: Per-type Precision is reported for tools whose outputs carry structural or explicit type information:
-  - **CircleSeeker**: Full per-type Precision for Uecc, Mecc, and Cecc — the only tool that explicitly classifies each detection by eccDNA type.
-  - **CReSIL / CReSIL-HiFi**: Cecc Precision only — multi-fragment detection groups (multiple regions under one eccDNA ID) are structurally identifiable as chimeric eccDNA candidates.
-  - **Other tools**: No per-type Precision (outputs are untyped single-region detections).
-
-### Detection Grouping
-
-Detected regions are grouped by eccDNA ID (name). Each group counts as **one detection**, regardless of how many individual regions it contains. This correctly handles:
-- **Mecc**: Multiple mapping sites for the same eccDNA count as one detection
-- **Cecc**: Multiple fragments of the same chimeric eccDNA count as one detection
-
-### eccDNA_RCA Deduplication
-
-eccDNA_RCA_nanopore outputs read-level results with substantial redundancy. Before evaluation, its output is deduplicated using **99% reciprocal overlap** to collapse near-identical detections. Even after this processing, significant redundancy remains (1.7x at 10X, 3.2x at 30X, 4.3x at 50X).
-
-## Results
-
-### Overall Performance (3-replicate average)
-
-#### human_10000_simple (10,000 Uecc)
-
-| Depth | Tool | Precision | Recall | F1 |
-|-------|------|-----------|--------|------|
-| 10X | CircleSeeker | **99.7%** | **93.5%** | **96.5%** |
-| 10X | CReSIL-HiFi | 98.4% | 66.1% | 79.1% |
-| 10X | CReSIL | 94.3% | 51.9% | 66.9% |
-| 10X | eccDNA_RCA | 87.4% | 73.1% | 79.6% |
-| 10X | CircleMap | 99.7% | 25.3% | 36.6% |
-| 10X | ecc_finder | 95.7% | 13.9% | 23.3% |
-| 30X | CircleSeeker | **99.6%** | **98.6%** | **99.1%** |
-| 30X | CReSIL-HiFi | 99.7% | 89.5% | 94.3% |
-| 30X | CReSIL | 98.7% | 80.5% | 88.7% |
-| 30X | eccDNA_RCA | 72.9% | 85.4% | 78.7% |
-| 30X | CircleMap | 98.5% | 78.7% | 87.5% |
-| 30X | ecc_finder | 94.0% | 35.6% | 51.7% |
-| 50X | CircleSeeker | **99.4%** | **99.1%** | **99.2%** |
-| 50X | CReSIL-HiFi | 99.8% | 91.8% | 95.6% |
-| 50X | CReSIL | 99.0% | 85.8% | 91.9% |
-| 50X | eccDNA_RCA | 63.7% | 88.4% | 74.0% |
-| 50X | CircleMap | 97.4% | 84.4% | 90.5% |
-| 50X | ecc_finder | 94.5% | 42.2% | 58.3% |
-
-#### human_23000 (20,000 Uecc + 2,000 Mecc + 1,000 Cecc)
-
-| Depth | Tool | Precision | Recall | F1 |
-|-------|------|-----------|--------|------|
-| 10X | CircleSeeker | **98.2%** | **91.0%** | **94.4%** |
-| 10X | CReSIL-HiFi | 94.0% | 55.2% | 69.5% |
-| 10X | CReSIL | 89.8% | 43.2% | 58.4% |
-| 10X | eccDNA_RCA | 80.9% | 63.3% | 71.1% |
-| 10X | CircleMap | 94.4% | 46.1% | 62.0% |
-| 10X | ecc_finder | 71.8% | 8.1% | 14.6% |
-| 30X | CircleSeeker | **98.1%** | **96.4%** | **97.2%** |
-| 30X | CReSIL-HiFi | 95.6% | 74.7% | 83.9% |
-| 30X | CReSIL | 95.3% | 67.6% | 79.1% |
-| 30X | eccDNA_RCA | 65.2% | 74.2% | 69.4% |
-| 30X | CircleMap | 93.6% | 68.5% | 79.1% |
-| 30X | ecc_finder | 68.6% | 10.0% | 17.4% |
-| 50X | CircleSeeker | **97.9%** | **97.1%** | **97.5%** |
-| 50X | CReSIL-HiFi | 95.7% | 76.9% | 85.3% |
-| 50X | CReSIL | 96.4% | 72.4% | 82.7% |
-| 50X | eccDNA_RCA | 56.5% | 76.6% | 65.0% |
-| 50X | CircleMap | 92.8% | 74.0% | 82.3% |
-| 50X | ecc_finder | 67.3% | 9.8% | 17.2% |
-
-#### ColCEN_5200 (4,000 Uecc + 1,000 Mecc + 200 Cecc)
-
-| Depth | Tool | Precision | Recall | F1 |
-|-------|------|-----------|--------|------|
-| 10X | CircleSeeker | **98.9%** | **90.8%** | **94.7%** |
-| 10X | CReSIL-HiFi | 95.0% | 35.6% | 51.8% |
-| 10X | CReSIL | 91.6% | 29.1% | 44.2% |
-| 10X | eccDNA_RCA | 82.7% | 57.3% | 67.7% |
-| 10X | CircleMap | 88.2% | 19.5% | 29.6% |
-| 10X | ecc_finder | 18.9% | 0.6% | 1.1% |
-| 30X | CircleSeeker | **98.9%** | **96.1%** | **97.5%** |
-| 30X | CReSIL-HiFi | 96.3% | 46.8% | 63.0% |
-| 30X | CReSIL | 96.1% | 43.5% | 59.8% |
-| 30X | eccDNA_RCA | 66.6% | 66.9% | 66.7% |
-| 30X | CircleMap | 94.8% | 60.4% | 73.8% |
-| 30X | ecc_finder | 17.0% | 1.5% | 2.7% |
-| 50X | CircleSeeker | **98.8%** | **97.0%** | **97.9%** |
-| 50X | CReSIL-HiFi | 96.1% | 48.7% | 64.6% |
-| 50X | CReSIL | 96.8% | 46.9% | 63.2% |
-| 50X | eccDNA_RCA | 57.4% | 69.3% | 62.8% |
-| 50X | CircleMap | 94.2% | 64.5% | 76.5% |
-| 50X | ecc_finder | 19.6% | 2.0% | 3.7% |
-
-### Per-type Recall (3-replicate average)
-
-#### Uecc Recall
-
-| Dataset | Depth | CircleSeeker | CReSIL-HiFi | CReSIL | eccDNA_RCA | CircleMap | ecc_finder |
-|---------|-------|:-----------:|:-----------:|:------:|:----------:|:---------:|:----------:|
-| human_10000_simple | 10X | **93.5%** | 66.1% | 51.9% | 73.1% | 25.3% | 13.9% |
-| human_10000_simple | 30X | **98.6%** | 89.5% | 80.5% | 85.4% | 78.7% | 35.6% |
-| human_10000_simple | 50X | **99.1%** | 91.8% | 85.8% | 88.4% | 84.4% | 42.2% |
-| human_23000 | 10X | **93.1%** | 62.6% | 49.0% | 72.8% | 53.0% | 9.3% |
-| human_23000 | 30X | **98.3%** | 84.5% | 76.1% | 85.3% | 78.5% | 11.4% |
-| human_23000 | 50X | **98.8%** | 86.9% | 81.0% | 88.0% | 84.2% | 11.3% |
-| ColCEN_5200 | 10X | **91.9%** | 44.7% | 37.2% | 74.5% | 25.3% | 0.7% |
-| ColCEN_5200 | 30X | **96.9%** | 58.9% | 55.1% | 86.9% | 77.4% | 1.9% |
-| ColCEN_5200 | 50X | **97.5%** | 60.8% | 59.0% | 90.1% | 82.0% | 2.6% |
-
-#### Mecc Recall
-
-| Dataset | Depth | CircleSeeker | CReSIL-HiFi | CReSIL | eccDNA_RCA | CircleMap | ecc_finder |
-|---------|-------|:-----------:|:-----------:|:------:|:----------:|:---------:|:----------:|
-| human_23000 | 10X | **77.2%** | 5.8% | 1.6% | 0.0% | 0.4% | 0.3% |
-| human_23000 | 30X | **82.2%** | 9.0% | 4.5% | 0.0% | 3.0% | 0.4% |
-| human_23000 | 50X | **83.7%** | 10.3% | 6.4% | 0.0% | 9.2% | 0.4% |
-| ColCEN_5200 | 10X | **90.1%** | 5.6% | 1.8% | 0.0% | 0.2% | 0.0% |
-| ColCEN_5200 | 30X | **95.2%** | 7.4% | 4.5% | 0.0% | 4.5% | 0.3% |
-| ColCEN_5200 | 50X | **96.5%** | 9.7% | 6.0% | 0.0% | 7.2% | 0.3% |
-
-#### Cecc Recall
-
-| Dataset | Depth | CircleSeeker | CReSIL-HiFi | CReSIL | eccDNA_RCA | CircleMap | ecc_finder |
-|---------|-------|:-----------:|:-----------:|:------:|:----------:|:---------:|:----------:|
-| human_23000 | 10X | **76.9%** | 5.4% | 10.8% | 0.0% | 0.0% | 0.0% |
-| human_23000 | 30X | **87.7%** | 9.4% | 22.6% | 0.0% | 0.0% | 0.0% |
-| human_23000 | 50X | **90.8%** | 10.9% | 33.2% | 0.0% | 0.0% | 0.0% |
-| ColCEN_5200 | 10X | **72.7%** | 1.8% | 4.0% | 0.0% | 0.0% | 0.0% |
-| ColCEN_5200 | 30X | **85.0%** | 2.2% | 6.8% | 0.0% | 0.0% | 0.0% |
-| ColCEN_5200 | 50X | **89.7%** | 1.8% | 9.5% | 0.0% | 0.0% | 0.0% |
-
-### CircleSeeker Per-type Precision (3-replicate average)
-
-CircleSeeker is the only tool that classifies each detection by eccDNA type, enabling full per-type Precision evaluation.
-
-| Dataset | Depth | Uecc Precision | Mecc Precision | Cecc Precision |
-|---------|-------|:--------------:|:--------------:|:--------------:|
-| human_10000_simple | 10X | **99.8%** | - | - |
-| human_10000_simple | 30X | **99.8%** | - | - |
-| human_10000_simple | 50X | **99.6%** | - | - |
-| human_23000 | 10X | **99.2%** | **86.0%** | **95.4%** |
-| human_23000 | 30X | **99.2%** | **85.0%** | **93.8%** |
-| human_23000 | 50X | **99.2%** | **84.5%** | **92.8%** |
-| ColCEN_5200 | 10X | **99.2%** | **96.8%** | **98.2%** |
-| ColCEN_5200 | 30X | **99.3%** | **96.7%** | **96.8%** |
-| ColCEN_5200 | 50X | **99.3%** | **96.5%** | **96.0%** |
-
-### Cecc Precision Comparison (3-replicate average)
-
-Tools that produce multi-fragment detection groups can be evaluated for Cecc Precision. CircleSeeker explicitly classifies detections; CReSIL/CReSIL-HiFi use structural inference (multi-region groups = Cecc candidates).
-
-| Dataset | Depth | CircleSeeker | CReSIL | CReSIL-HiFi |
-|---------|-------|:-----------:|:------:|:-----------:|
-| human_23000 | 10X | **95.4%** | 42.7% | 28.5% |
-| human_23000 | 30X | **93.8%** | 67.8% | 40.5% |
-| human_23000 | 50X | **92.8%** | 79.9% | 44.0% |
-| ColCEN_5200 | 10X | **98.2%** | 33.8% | 21.6% |
-| ColCEN_5200 | 30X | **96.8%** | 52.4% | 31.1% |
-| ColCEN_5200 | 50X | **96.0%** | 59.6% | 26.8% |
-
-### eccDNA_RCA Redundancy (after 99% deduplication)
-
-| Dataset | 10X | 30X | 50X |
-|---------|-----|-----|-----|
-| human_10000_simple | 1.68x | 3.27x | 4.50x |
-| human_23000 | 1.66x | 3.14x | 4.31x |
-| ColCEN_5200 | 1.69x | 3.16x | 4.31x |
-
-## Repository Structure
-
+```bash
+python scripts/benchmark_analysis.py /path/to/benchmark_collect
 ```
+
+The expected directory names are `human_U_10000`, `human_23000` and
+`ara_UMC_5200`, each containing `rep1` to `rep3` and
+`sequencing_10X`, `sequencing_30X` and `sequencing_50X` subdirectories.
+
+## Common-task result
+
+Mean performance across the three Human-Simple 30x replicates is shown below.
+The full replicate-level data and all depths are in
+`results/uecc_only/`.
+
+| Tool | Precision | Recall | F1 |
+|---|---:|---:|---:|
+| CircleSeeker | 99.60% | 98.54% | 99.07% |
+| CReSIL-HiFi (author-created adaptation) | 99.76% | 89.53% | 94.37% |
+| CReSIL | 98.72% | 80.61% | 88.75% |
+| Circle-Map | 98.28% | 78.77% | 87.45% |
+| eccDNA_RCA_nanopore | 72.86% | 85.28% | 78.58% |
+| ecc_finder | 94.01% | 35.60% | 51.64% |
+
+Mixed-scenario overall and per-type values remain available in
+`results/benchmark_results.csv` for the explicitly labelled UMC-aware stress
+tests.
+
+## Synthetic HiFi-profile sensitivity
+
+To test whether the Human-Simple result depended on the study-derived
+`HeLa_HiFi_2k` profile, CircleSeeker was rerun in a paired sensitivity analysis
+with a fully synthetic, prespecified alternative profile. The alternative used
+2,000 random sequences, a truncated log-normal length distribution (3-50 kb;
+median parameter 12 kb; log-scale sigma 0.65; seed 20260710) and HiFi-range
+base qualities. Truth subsets, coverage, background ratio, random seed and
+CircleSeeker settings were held constant within each of three replicate pairs.
+
+| Profile | Precision | Recall | F1 |
+|---|---:|---:|---:|
+| Built-in `HeLa_HiFi_2k` | 99.46% | 98.87% | 99.16% |
+| Fully synthetic | 99.32% | 99.08% | 99.20% |
+
+The paired synthetic-minus-built-in F1 difference was +0.035 percentage
+points. This supports the narrow conclusion that the observed CircleSeeker
+performance is not contingent on the study-derived read-length profile. It
+does not make the simulator a complete model of experimental recovery bias.
+The deterministic generator, selected truth coordinates and replicate-level
+outputs are in `scripts/round3_hifi_profile_sensitivity.py` and
+`results/profile_sensitivity/`.
+
+## Repository contents
+
+```text
 CircleSeeker-benchmark/
-├── README.md
-├── .gitignore
-├── scripts/
-│   ├── benchmark_analysis.py             # Evaluation script (unified matching)
-│   ├── CircleMap_Enhanced.py             # CircleMap Enhanced implementation
-│   ├── collect_benchmark_results.sh      # Collect tool outputs into unified directory
-│   ├── sbatch_CircleMap_Enhanced.sh     # SLURM job: CircleMap Enhanced
-│   ├── sbatch_CircleSeeker.sh           # SLURM job: CircleSeeker
-│   ├── sbatch_CReSIL.sh                # SLURM job: CReSIL (ONT)
-│   ├── sbatch_CReSIL_HiFi.sh           # SLURM job: CReSIL-HiFi
-│   ├── sbatch_eccDNA_RCA_nanopore.sh   # SLURM job: eccDNA_RCA
-│   └── sbatch_ecc_finder.sh            # SLURM job: ecc_finder
-└── results/
-    ├── benchmark_results.csv             # Full benchmark results (all conditions)
-    └── benchmark_rca_stats.csv           # eccDNA_RCA redundancy statistics
+|-- README.md
+|-- scripts/
+|   |-- benchmark_analysis.py
+|   |-- round3_hifi_profile_sensitivity.py
+|   |-- CircleMap_Enhanced.py
+|   |-- collect_benchmark_results.sh
+|   `-- sbatch_*.sh
+`-- results/
+    |-- benchmark_results.csv
+    |-- benchmark_rca_stats.csv
+    |-- length_stratified_results.csv
+    |-- runtime_memory_stats.csv
+    |-- uecc_only/
+    `-- profile_sensitivity/
 ```
 
-### Scripts
+- `results/benchmark_results.csv` contains 540 rows: three scenarios, three
+  depths, three replicates, six tools and the applicable overall/per-type
+  evaluations.
+- `results/length_stratified_results.csv` contains replicate-level recall in
+  four truth-size bins.
+- `results/runtime_memory_stats.csv` contains runtime and peak-memory records.
+- `results/uecc_only/` contains the round-3 common-task summaries and
+  mixed-scenario UeccDNA recall exports.
+- `results/profile_sensitivity/` contains the paired synthetic-profile inputs,
+  provenance records, read summaries and metrics.
 
-- **`benchmark_analysis.py`**: Core evaluation script. Parses truth BED files and tool outputs, performs unified matching (Cecc strict → Uecc/Mecc reciprocal overlap), and outputs per-sample and per-type metrics.
-- **`collect_benchmark_results.sh`**: Aggregates outputs from all tools into the `benchmark_collect/` directory structure used by the analysis script.
-- **`sbatch_*.sh`**: SLURM array job scripts for HPC cluster execution. Processes all 27 samples in parallel. Modify `BASE_DIR` to match your data directory before use.
-- **`CircleMap_Enhanced.py`**: Enhanced CircleMap pipeline integrating fastp, BWA, samtools, and Circle-Map with automated filtering.
+## Data availability and reproducibility boundary
 
-### Results CSV Format
-
-**benchmark_results.csv** columns:
-- `Genome`, `Rep`, `Depth`, `Tool`, `EvalType`: Sample and evaluation identifiers. `EvalType` is one of: `Overall`, `Uecc`, `Mecc`, `Cecc`
-- `Truth`: Number of ground-truth eccDNA entries
-- `Detected`: Number of detected eccDNA groups
-- `TP`, `FP`, `FN`: True positives, false positives, false negatives
-- `Precision`, `Recall`, `F1`: Performance metrics. For `Overall` rows, all three are computed. For per-type rows (`Uecc`/`Mecc`/`Cecc`), `Recall` is always present; `Precision`/`F1` are present only for tools with type information (CircleSeeker: all three types; CReSIL/CReSIL-HiFi: Cecc only)
-- `Redundancy`: Detection redundancy ratio (eccDNA_RCA only)
-
-## Reproducing the Benchmark
-
-### Prerequisites
-
-- Python 3.7+
-- conda/mamba with bioconda channel
-- Tool-specific environments (see individual run scripts for conda environment setup)
-
-### Step 1: Download Benchmark Data
-
-Download the simulated benchmark dataset from figshare:
-
-```bash
-# Download and extract benchmark data
-# DOI: [TO BE ADDED]
-tar -xzf benchmark_collect.tar.gz
-```
-
-The extracted `benchmark_collect/` directory contains:
-```
-benchmark_collect/
-├── ColCEN_5200/
-│   ├── rep1/
-│   │   ├── sequencing_10X/
-│   │   │   ├── truth_all.bed              # Ground truth
-│   │   │   ├── CircleSeeker_summary.csv   # CircleSeeker (HiFi)
-│   │   │   ├── CReSIL_HiFi_eccDNA_final.txt  # CReSIL-HiFi (HiFi)
-│   │   │   ├── CReSIL_eccDNA_final.txt    # CReSIL (ONT)
-│   │   │   ├── eccDNA_RCA_info.tsv        # eccDNA_RCA (ONT)
-│   │   │   ├── CircleMap_filtered.bed     # CircleMap (NGS)
-│   │   │   └── ecc_finder.csv             # ecc_finder (NGS)
-│   │   ├── sequencing_30X/
-│   │   └── sequencing_50X/
-│   ├── rep2/
-│   └── rep3/
-├── human_10000_simple/
-└── human_23000/
-```
-
-### Step 2: Run Evaluation
-
-```bash
-python scripts/benchmark_analysis.py benchmark_collect
-```
-
-This will output:
-- Console summary of all results
-- `results/benchmark_results.csv` — full benchmark results
-- `results/benchmark_rca_stats.csv` — eccDNA_RCA redundancy statistics
-
-### Step 3 (Optional): Rerun Tools from Raw Data
-
-To rerun individual tools from simulated sequencing reads (not included in `benchmark_collect`), use the corresponding `sbatch_*.sh` SLURM scripts. Refer to each script's header for required conda environments and dependencies.
-
-## Data Availability
-
-- **Benchmark results**: Included in this repository (`results/`)
-- **Tool outputs and ground truth**: Available on figshare (DOI: [TO BE ADDED])
-
-## Citation
-
-If you use this benchmark in your research, please cite:
-
-```
-[TO BE ADDED]
-```
-
-## License
-
-[TO BE ADDED]
+This repository includes the scripts and metric-level source data needed to
+audit the reported benchmark summaries. The large simulated read files and
+complete intermediate output directories from all six tools are not stored in
+Git. Rerunning the benchmark from reads therefore requires regenerating the
+datasets with the commands and versions above, then running the tool-specific
+scripts. Cluster paths and scheduler settings in `sbatch_*.sh` must be adapted
+to the local environment.

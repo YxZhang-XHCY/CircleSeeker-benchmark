@@ -1,0 +1,109 @@
+Genome,Rep,Depth,Tool,EvalType,Truth,Detected,TP,FP,FN,Precision,Recall,F1,Redundancy,tool_display
+ara_UMC_5200,rep1,sequencing_10X,CircleSeeker,Uecc,4000,3705.0,3689,22.0,311,0.9941,0.9223,0.9568,,CircleSeeker
+ara_UMC_5200,rep2,sequencing_10X,CircleSeeker,Uecc,4000,3691.0,3665,31.0,335,0.9916,0.9163,0.9524,,CircleSeeker
+ara_UMC_5200,rep3,sequencing_10X,CircleSeeker,Uecc,4000,3698.0,3681,23.0,319,0.9938,0.9203,0.9556,,CircleSeeker
+ara_UMC_5200,rep1,sequencing_10X,CReSIL_HiFi,Uecc,4000,,1731,,2269,,0.4328,,,CReSIL-HiFi (author-created HiFi adaptation)
+ara_UMC_5200,rep2,sequencing_10X,CReSIL_HiFi,Uecc,4000,,1782,,2218,,0.4455,,,CReSIL-HiFi (author-created HiFi adaptation)
+ara_UMC_5200,rep3,sequencing_10X,CReSIL_HiFi,Uecc,4000,,1818,,2182,,0.4545,,,CReSIL-HiFi (author-created HiFi adaptation)
+ara_UMC_5200,rep1,sequencing_10X,CReSIL,Uecc,4000,,1444,,2556,,0.361,,,CReSIL
+ara_UMC_5200,rep2,sequencing_10X,CReSIL,Uecc,4000,,1452,,2548,,0.363,,,CReSIL
+ara_UMC_5200,rep3,sequencing_10X,CReSIL,Uecc,4000,,1500,,2500,,0.375,,,CReSIL
+ara_UMC_5200,rep1,sequencing_10X,eccDNA_RCA,Uecc,4000,,2977,,1023,,0.7442,,1.67,eccDNA_RCA_nanopore
+ara_UMC_5200,rep2,sequencing_10X,eccDNA_RCA,Uecc,4000,,2977,,1023,,0.7442,,1.67,eccDNA_RCA_nanopore
+ara_UMC_5200,rep3,sequencing_10X,eccDNA_RCA,Uecc,4000,,2987,,1013,,0.7468,,1.67,eccDNA_RCA_nanopore
+ara_UMC_5200,rep1,sequencing_10X,CircleMap,Uecc,4000,,459,,3541,,0.1148,,,Circle-Map
+ara_UMC_5200,rep2,sequencing_10X,CircleMap,Uecc,4000,,458,,3542,,0.1145,,,Circle-Map
+ara_UMC_5200,rep3,sequencing_10X,CircleMap,Uecc,4000,,425,,3575,,0.1062,,,Circle-Map
+ara_UMC_5200,rep1,sequencing_10X,ecc_finder,Uecc,4000,,22,,3978,,0.0055,,,ecc_finder
+ara_UMC_5200,rep2,sequencing_10X,ecc_finder,Uecc,4000,,25,,3975,,0.0063,,,ecc_finder
+ara_UMC_5200,rep3,sequencing_10X,ecc_finder,Uecc,4000,,26,,3974,,0.0065,,,ecc_finder
+ara_UMC_5200,rep1,sequencing_30X,CircleSeeker,Uecc,4000,3885.0,3878,13.0,122,0.9967,0.9695,0.9829,,CircleSeeker
+ara_UMC_5200,rep2,sequencing_30X,CircleSeeker,Uecc,4000,3898.0,3875,29.0,125,0.9926,0.9688,0.9805,,CircleSeeker
+ara_UMC_5200,rep3,sequencing_30X,CircleSeeker,Uecc,4000,3891.0,3873,27.0,127,0.9931,0.9683,0.9805,,CircleSeeker
+ara_UMC_5200,rep1,sequencing_30X,CReSIL_HiFi,Uecc,4000,,2287,,1713,,0.5717,,,CReSIL-HiFi (author-created HiFi adaptation)
+ara_UMC_5200,rep2,sequencing_30X,CReSIL_HiFi,Uecc,4000,,2353,,1647,,0.5883,,,CReSIL-HiFi (author-created HiFi adaptation)
+ara_UMC_5200,rep3,sequencing_30X,CReSIL_HiFi,Uecc,4000,,2430,,1570,,0.6075,,,CReSIL-HiFi (author-created HiFi adaptation)
+ara_UMC_5200,rep1,sequencing_30X,CReSIL,Uecc,4000,,2151,,1849,,0.5377,,,CReSIL
+ara_UMC_5200,rep2,sequencing_30X,CReSIL,Uecc,4000,,2208,,1792,,0.552,,,CReSIL
+ara_UMC_5200,rep3,sequencing_30X,CReSIL,Uecc,4000,,2320,,1680,,0.58,,,CReSIL
+ara_UMC_5200,rep1,sequencing_30X,eccDNA_RCA,Uecc,4000,,3497,,503,,0.8742,,3.2,eccDNA_RCA_nanopore
+ara_UMC_5200,rep2,sequencing_30X,eccDNA_RCA,Uecc,4000,,3460,,540,,0.865,,3.14,eccDNA_RCA_nanopore
+ara_UMC_5200,rep3,sequencing_30X,eccDNA_RCA,Uecc,4000,,3505,,495,,0.8762,,3.17,eccDNA_RCA_nanopore
+ara_UMC_5200,rep1,sequencing_30X,CircleMap,Uecc,4000,,3083,,917,,0.7708,,,Circle-Map
+ara_UMC_5200,rep2,sequencing_30X,CircleMap,Uecc,4000,,3083,,917,,0.7708,,,Circle-Map
+ara_UMC_5200,rep3,sequencing_30X,CircleMap,Uecc,4000,,3129,,871,,0.7823,,,Circle-Map
+ara_UMC_5200,rep1,sequencing_30X,ecc_finder,Uecc,4000,,75,,3925,,0.0187,,,ecc_finder
+ara_UMC_5200,rep2,sequencing_30X,ecc_finder,Uecc,4000,,78,,3922,,0.0195,,,ecc_finder
+ara_UMC_5200,rep3,sequencing_30X,ecc_finder,Uecc,4000,,68,,3932,,0.017,,,ecc_finder
+ara_UMC_5200,rep1,sequencing_50X,CircleSeeker,Uecc,4000,3914.0,3899,22.0,101,0.9944,0.9748,0.9845,,CircleSeeker
+ara_UMC_5200,rep2,sequencing_50X,CircleSeeker,Uecc,4000,3919.0,3898,28.0,102,0.9929,0.9745,0.9836,,CircleSeeker
+ara_UMC_5200,rep3,sequencing_50X,CircleSeeker,Uecc,4000,3933.0,3907,33.0,93,0.9916,0.9768,0.9841,,CircleSeeker
+ara_UMC_5200,rep1,sequencing_50X,CReSIL_HiFi,Uecc,4000,,2349,,1651,,0.5873,,,CReSIL-HiFi (author-created HiFi adaptation)
+ara_UMC_5200,rep2,sequencing_50X,CReSIL_HiFi,Uecc,4000,,2431,,1569,,0.6078,,,CReSIL-HiFi (author-created HiFi adaptation)
+ara_UMC_5200,rep3,sequencing_50X,CReSIL_HiFi,Uecc,4000,,2497,,1503,,0.6242,,,CReSIL-HiFi (author-created HiFi adaptation)
+ara_UMC_5200,rep1,sequencing_50X,CReSIL,Uecc,4000,,2291,,1709,,0.5727,,,CReSIL
+ara_UMC_5200,rep2,sequencing_50X,CReSIL,Uecc,4000,,2364,,1636,,0.591,,,CReSIL
+ara_UMC_5200,rep3,sequencing_50X,CReSIL,Uecc,4000,,2450,,1550,,0.6125,,,CReSIL
+ara_UMC_5200,rep1,sequencing_50X,eccDNA_RCA,Uecc,4000,,3606,,394,,0.9015,,4.38,eccDNA_RCA_nanopore
+ara_UMC_5200,rep2,sequencing_50X,eccDNA_RCA,Uecc,4000,,3601,,399,,0.9002,,4.27,eccDNA_RCA_nanopore
+ara_UMC_5200,rep3,sequencing_50X,eccDNA_RCA,Uecc,4000,,3612,,388,,0.903,,4.28,eccDNA_RCA_nanopore
+ara_UMC_5200,rep1,sequencing_50X,CircleMap,Uecc,4000,,3288,,712,,0.822,,,Circle-Map
+ara_UMC_5200,rep2,sequencing_50X,CircleMap,Uecc,4000,,3298,,702,,0.8245,,,Circle-Map
+ara_UMC_5200,rep3,sequencing_50X,CircleMap,Uecc,4000,,3304,,696,,0.826,,,Circle-Map
+ara_UMC_5200,rep1,sequencing_50X,ecc_finder,Uecc,4000,,97,,3903,,0.0243,,,ecc_finder
+ara_UMC_5200,rep2,sequencing_50X,ecc_finder,Uecc,4000,,108,,3892,,0.027,,,ecc_finder
+ara_UMC_5200,rep3,sequencing_50X,ecc_finder,Uecc,4000,,93,,3907,,0.0232,,,ecc_finder
+human_23000,rep1,sequencing_10X,CircleSeeker,Uecc,20000,18711.0,18593,155.0,1407,0.9917,0.9296,0.9597,,CircleSeeker
+human_23000,rep2,sequencing_10X,CircleSeeker,Uecc,20000,18723.0,18604,156.0,1396,0.9917,0.9302,0.96,,CircleSeeker
+human_23000,rep3,sequencing_10X,CircleSeeker,Uecc,20000,18761.0,18658,151.0,1342,0.992,0.9329,0.9615,,CircleSeeker
+human_23000,rep1,sequencing_10X,CReSIL_HiFi,Uecc,20000,,12533,,7467,,0.6267,,,CReSIL-HiFi (author-created HiFi adaptation)
+human_23000,rep2,sequencing_10X,CReSIL_HiFi,Uecc,20000,,12418,,7582,,0.6209,,,CReSIL-HiFi (author-created HiFi adaptation)
+human_23000,rep3,sequencing_10X,CReSIL_HiFi,Uecc,20000,,12621,,7379,,0.631,,,CReSIL-HiFi (author-created HiFi adaptation)
+human_23000,rep1,sequencing_10X,CReSIL,Uecc,20000,,9871,,10129,,0.4935,,,CReSIL
+human_23000,rep2,sequencing_10X,CReSIL,Uecc,20000,,9648,,10352,,0.4824,,,CReSIL
+human_23000,rep3,sequencing_10X,CReSIL,Uecc,20000,,9880,,10120,,0.494,,,CReSIL
+human_23000,rep1,sequencing_10X,eccDNA_RCA,Uecc,20000,,14673,,5327,,0.7337,,1.65,eccDNA_RCA_nanopore
+human_23000,rep2,sequencing_10X,eccDNA_RCA,Uecc,20000,,14403,,5597,,0.7201,,1.65,eccDNA_RCA_nanopore
+human_23000,rep3,sequencing_10X,eccDNA_RCA,Uecc,20000,,14632,,5368,,0.7316,,1.67,eccDNA_RCA_nanopore
+human_23000,rep1,sequencing_10X,CircleMap,Uecc,20000,,10672,,9328,,0.5336,,,Circle-Map
+human_23000,rep2,sequencing_10X,CircleMap,Uecc,20000,,10506,,9494,,0.5253,,,Circle-Map
+human_23000,rep3,sequencing_10X,CircleMap,Uecc,20000,,10624,,9376,,0.5312,,,Circle-Map
+human_23000,rep1,sequencing_10X,ecc_finder,Uecc,20000,,1893,,18107,,0.0946,,,ecc_finder
+human_23000,rep2,sequencing_10X,ecc_finder,Uecc,20000,,1881,,18119,,0.094,,,ecc_finder
+human_23000,rep3,sequencing_10X,ecc_finder,Uecc,20000,,1798,,18202,,0.0899,,,ecc_finder
+human_23000,rep1,sequencing_30X,CircleSeeker,Uecc,20000,19761.0,19654,147.0,346,0.9926,0.9827,0.9876,,CircleSeeker
+human_23000,rep2,sequencing_30X,CircleSeeker,Uecc,20000,19768.0,19658,155.0,342,0.9922,0.9829,0.9875,,CircleSeeker
+human_23000,rep3,sequencing_30X,CircleSeeker,Uecc,20000,19761.0,19658,154.0,342,0.9922,0.9829,0.9875,,CircleSeeker
+human_23000,rep1,sequencing_30X,CReSIL_HiFi,Uecc,20000,,16926,,3074,,0.8463,,,CReSIL-HiFi (author-created HiFi adaptation)
+human_23000,rep2,sequencing_30X,CReSIL_HiFi,Uecc,20000,,16828,,3172,,0.8414,,,CReSIL-HiFi (author-created HiFi adaptation)
+human_23000,rep3,sequencing_30X,CReSIL_HiFi,Uecc,20000,,16972,,3028,,0.8486,,,CReSIL-HiFi (author-created HiFi adaptation)
+human_23000,rep1,sequencing_30X,CReSIL,Uecc,20000,,15288,,4712,,0.7644,,,CReSIL
+human_23000,rep2,sequencing_30X,CReSIL,Uecc,20000,,15112,,4888,,0.7556,,,CReSIL
+human_23000,rep3,sequencing_30X,CReSIL,Uecc,20000,,15266,,4734,,0.7633,,,CReSIL
+human_23000,rep1,sequencing_30X,eccDNA_RCA,Uecc,20000,,17090,,2910,,0.8545,,3.15,eccDNA_RCA_nanopore
+human_23000,rep2,sequencing_30X,eccDNA_RCA,Uecc,20000,,16965,,3035,,0.8482,,3.11,eccDNA_RCA_nanopore
+human_23000,rep3,sequencing_30X,eccDNA_RCA,Uecc,20000,,17115,,2885,,0.8558,,3.16,eccDNA_RCA_nanopore
+human_23000,rep1,sequencing_30X,CircleMap,Uecc,20000,,15774,,4226,,0.7887,,,Circle-Map
+human_23000,rep2,sequencing_30X,CircleMap,Uecc,20000,,15606,,4394,,0.7803,,,Circle-Map
+human_23000,rep3,sequencing_30X,CircleMap,Uecc,20000,,15716,,4284,,0.7858,,,Circle-Map
+human_23000,rep1,sequencing_30X,ecc_finder,Uecc,20000,,2419,,17581,,0.121,,,ecc_finder
+human_23000,rep2,sequencing_30X,ecc_finder,Uecc,20000,,1975,,18025,,0.0988,,,ecc_finder
+human_23000,rep3,sequencing_30X,ecc_finder,Uecc,20000,,2464,,17536,,0.1232,,,ecc_finder
+human_23000,rep1,sequencing_50X,CircleSeeker,Uecc,20000,19872.0,19761,152.0,239,0.9924,0.988,0.9902,,CircleSeeker
+human_23000,rep2,sequencing_50X,CircleSeeker,Uecc,20000,19869.0,19754,160.0,246,0.9919,0.9877,0.9898,,CircleSeeker
+human_23000,rep3,sequencing_50X,CircleSeeker,Uecc,20000,19877.0,19757,174.0,243,0.9912,0.9879,0.9895,,CircleSeeker
+human_23000,rep1,sequencing_50X,CReSIL_HiFi,Uecc,20000,,17379,,2621,,0.869,,,CReSIL-HiFi (author-created HiFi adaptation)
+human_23000,rep2,sequencing_50X,CReSIL_HiFi,Uecc,20000,,17337,,2663,,0.8669,,,CReSIL-HiFi (author-created HiFi adaptation)
+human_23000,rep3,sequencing_50X,CReSIL_HiFi,Uecc,20000,,17427,,2573,,0.8713,,,CReSIL-HiFi (author-created HiFi adaptation)
+human_23000,rep1,sequencing_50X,CReSIL,Uecc,20000,,16226,,3774,,0.8113,,,CReSIL
+human_23000,rep2,sequencing_50X,CReSIL,Uecc,20000,,16105,,3895,,0.8053,,,CReSIL
+human_23000,rep3,sequencing_50X,CReSIL,Uecc,20000,,16242,,3758,,0.8121,,,CReSIL
+human_23000,rep1,sequencing_50X,eccDNA_RCA,Uecc,20000,,17634,,2366,,0.8817,,4.32,eccDNA_RCA_nanopore
+human_23000,rep2,sequencing_50X,eccDNA_RCA,Uecc,20000,,17549,,2451,,0.8774,,4.29,eccDNA_RCA_nanopore
+human_23000,rep3,sequencing_50X,eccDNA_RCA,Uecc,20000,,17635,,2365,,0.8818,,4.33,eccDNA_RCA_nanopore
+human_23000,rep1,sequencing_50X,CircleMap,Uecc,20000,,16920,,3080,,0.846,,,Circle-Map
+human_23000,rep2,sequencing_50X,CircleMap,Uecc,20000,,16745,,3255,,0.8373,,,Circle-Map
+human_23000,rep3,sequencing_50X,CircleMap,Uecc,20000,,16826,,3174,,0.8413,,,Circle-Map
+human_23000,rep1,sequencing_50X,ecc_finder,Uecc,20000,,2367,,17633,,0.1183,,,ecc_finder
+human_23000,rep2,sequencing_50X,ecc_finder,Uecc,20000,,2088,,17912,,0.1044,,,ecc_finder
+human_23000,rep3,sequencing_50X,ecc_finder,Uecc,20000,,2306,,17694,,0.1153,,,ecc_finder

@@ -1,0 +1,7 @@
+fastq,n_reads,total_bases,length_min,length_max,length_mean,length_sd,length_median,length_n50,mean_base_qscore,profile,replicate
+raw_reads_not_in_repository/rep1/builtin/rep1_builtin.HiFi.fastq,122946,918496682,100,51185,7470.73253298196,6742.57093206503,7496.5,13294,38.86294511513543,builtin,rep1
+raw_reads_not_in_repository/rep1/synthetic_q39/rep1_synthetic_q39.HiFi.fastq,120237,918496729,100,49862,7639.052280080175,8717.329020090607,4535.0,15561,39.007641542727804,synthetic_q39,rep1
+raw_reads_not_in_repository/rep2/builtin/rep2_builtin.HiFi.fastq,110582,752513557,100,51185,6805.027554213163,6665.6547678425295,3096.0,13146,38.85656540138585,builtin,rep2
+raw_reads_not_in_repository/rep2/synthetic_q39/rep2_synthetic_q39.HiFi.fastq,108234,752514309,100,49862,6952.660984533511,8491.918096561276,2580.0,15369,39.01026202280494,synthetic_q39,rep2
+raw_reads_not_in_repository/rep3/builtin/rep3_builtin.HiFi.fastq,126288,972180676,100,51185,7698.123938933232,6787.581711873284,9238.0,13340,38.852114357393376,builtin,rep3
+raw_reads_not_in_repository/rep3/synthetic_q39/rep3_synthetic_q39.HiFi.fastq,123203,972180654,100,49862,7890.884588849298,8852.165213060507,4941.0,15723,39.01097741449194,synthetic_q39,rep3

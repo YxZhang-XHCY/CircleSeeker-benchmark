@@ -25,7 +25,7 @@ from typing import List, Dict, Tuple, Set, Optional
 # 配置
 # ============================================================
 
-GENOMES = ["ColCEN_5200", "human_10000_simple", "human_23000"]
+GENOMES = ["ara_UMC_5200", "human_U_10000", "human_23000"]
 REPS = ["rep1", "rep2", "rep3"]
 DEPTHS = ["sequencing_10X", "sequencing_30X", "sequencing_50X"]
 TOOLS = ["CircleMap", "CircleSeeker", "CReSIL", "CReSIL_HiFi", "eccDNA_RCA", "ecc_finder"]
