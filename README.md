@@ -25,7 +25,7 @@ single generic ranking.
 - MeccDNA and CeccDNA values for Human-Simple are not applicable, not zero,
   because those truth classes are absent from that scenario.
 
-`CReSIL-HiFi` is an in-house HiFi adaptation of CReSIL created by the authors
+`CReSIL-HiFi` is an author-created HiFi adaptation of CReSIL made
 for this benchmark. It is not an independently published comparator.
 
 ## Tools and native input platforms
